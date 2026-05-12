@@ -1009,6 +1009,7 @@ function sendMessageToStreamlitClient(type, data) {
 let CITY_IMAGES = {};
 let HISTORY_IMAGES = {};
 let ABOUT_IMAGES = {};
+const DEFAULT_CITY_IMAGE_KEY = 'mumbai';
 const PAGE_MAP = {
         predictor: 'page-predictor',
         history: 'page-history',
@@ -1696,6 +1697,34 @@ function showPredictingOverlay() {
     `;
 }
 
+function resolveCityImage(key) {
+    const normalizedKey = String(key || '').trim().toLowerCase();
+    return CITY_IMAGES[normalizedKey] || CITY_IMAGES[DEFAULT_CITY_IMAGE_KEY] || '';
+}
+
+function applyCityImage(cityValue) {
+    const normalizedKey = String(cityValue || '').trim().toLowerCase();
+    const img = document.getElementById('cityImg');
+    const label = document.getElementById('cityLabel');
+    const fallbackSrc = resolveCityImage(DEFAULT_CITY_IMAGE_KEY);
+
+    if (label) {
+        label.textContent = (normalizedKey || DEFAULT_CITY_IMAGE_KEY).toUpperCase();
+    }
+
+    if (!img) {
+        return;
+    }
+
+    img.onerror = () => {
+        img.onerror = null;
+        if (fallbackSrc && img.src !== fallbackSrc) {
+            img.src = fallbackSrc;
+        }
+    };
+    img.src = resolveCityImage(normalizedKey);
+}
+
 // Receive configuration and state natively from Streamlit Python
 window.addEventListener("message", function(event) {
     if (event.data.type === "streamlit:render") {
@@ -1726,9 +1755,7 @@ window.addEventListener("message", function(event) {
         document.getElementById('kmsInput').value = args.kmsVal;
         document.getElementById('timesInput').value = args.tvVal;
         
-        const cityKey = (args.cityVal || '').toLowerCase();
-        document.getElementById('cityImg').src = CITY_IMAGES[cityKey] || CITY_IMAGES['mumbai'];
-        document.getElementById('cityLabel').textContent = cityKey.toUpperCase();
+        applyCityImage(args.cityVal || DEFAULT_CITY_IMAGE_KEY);
         
         renderPredictionOverlay(args);
         renderHistoryPage(args);
@@ -1752,9 +1779,8 @@ document.getElementById('citySel').addEventListener('change', function() {
     const img = document.getElementById('cityImg');
     img.style.opacity = '0';
     setTimeout(() => {
-        img.src = CITY_IMAGES[key] || CITY_IMAGES['mumbai'];
+        applyCityImage(key);
         img.style.opacity = '1';
-        document.getElementById('cityLabel').textContent = this.value.toUpperCase();
     }, 200);
 });
 

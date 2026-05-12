@@ -92,11 +92,18 @@ CITY_IMAGES = {
     "mumbai": "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=1400&q=85",
     "delhi": "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1400&q=85",
     "bangalore": "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1400&q=85",
+    "bengaluru": "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1400&q=85",
     "chennai": "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1400&q=85",
     "hyderabad": "https://images.unsplash.com/photo-1581852017103-68ac65514cf7?w=1400&q=85",
-    "pune": "https://images.unsplash.com/photo-1622397397924-f5630dfaeda0?w=1400&q=85",
+    "pune": "https://picsum.photos/seed/usedcar-pune/1600/900",
     "ahmedabad": "https://images.unsplash.com/photo-1615209853186-e4bd66602508?w=1400&q=85",
     "kolkata": "https://images.unsplash.com/photo-1558431382-27e303142255?w=1400&q=85",
+    "faridabad": "https://picsum.photos/seed/usedcar-faridabad/1600/900",
+    "ghaziabad": "https://picsum.photos/seed/usedcar-ghaziabad/1600/900",
+    "gurgaon": "https://picsum.photos/seed/usedcar-gurgaon/1600/900",
+    "lucknow": "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=1400&q=85",
+    "new delhi": "https://picsum.photos/seed/usedcar-newdelhi/1600/900",
+    "noida": "https://picsum.photos/seed/usedcar-noida/1600/900",
 }
 
 HISTORY_IMAGES = {
