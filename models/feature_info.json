@@ -1,0 +1,116 @@
+{
+  "selected_model": "GradientBoostingRegressor",
+  "final_model": "Refined GradientBoostingRegressor",
+  "features": [
+    "kms_run",
+    "fuel_type",
+    "city",
+    "times_viewed",
+    "body_type",
+    "transmission",
+    "car_age",
+    "kms_per_year"
+  ],
+  "selected_features_tuned": [
+    "car_age",
+    "fuel_type",
+    "body_type",
+    "kms_run",
+    "kms_per_year",
+    "times_viewed",
+    "transmission"
+  ],
+  "train_samples": 5920,
+  "test_samples": 1480,
+  "target_column": "sale_price",
+  "categorical_features": [
+    "fuel_type",
+    "city",
+    "body_type",
+    "transmission"
+  ],
+  "raw_input_features": [
+    "yr_mfr",
+    "kms_run",
+    "fuel_type",
+    "city",
+    "times_viewed",
+    "body_type",
+    "transmission"
+  ],
+  "reference_year": 2024,
+  "metrics": {
+    "Baseline: Linear Regression": {
+      "mae": 125327.48,
+      "mse": 36924753772.86,
+      "r2": 0.4696
+    },
+    "Refined: Linear Regression (Ridge)": {
+      "mae": 125852.91,
+      "mse": 37125398425.66,
+      "r2": 0.4667
+    },
+    "Baseline: Gradient Boosting": {
+      "mae": 90663.12,
+      "mse": 19267575788.25,
+      "r2": 0.7232
+    },
+    "Refined: Gradient Boosting [FINAL]": {
+      "mae": 92656.42,
+      "mse": 19257483141.49,
+      "r2": 0.7234
+    }
+  },
+  "best_model_params": {
+    "learning_rate": 0.01,
+    "max_depth": 5,
+    "n_estimators": 500
+  },
+  "best_params": {
+    "learning_rate": 0.01,
+    "max_depth": 5,
+    "n_estimators": 500
+  },
+  "best_alpha_ridge": 50.0,
+  "baseline_lr_r2": 0.4696,
+  "baseline_lr_mae": 125327.48,
+  "baseline_lr_mse": 36924753772.86,
+  "baseline_gb_r2": 0.7232,
+  "baseline_gb_mae": 90663.12,
+  "baseline_gb_mse": 19267575788.25,
+  "refined_lr_r2": 0.4667,
+  "refined_lr_mae": 125852.91,
+  "refined_lr_mse": 37125398425.66,
+  "refined_gb_r2": 0.7234,
+  "refined_gb_mae": 92656.42,
+  "refined_gb_mse": 19257483141.49,
+  "n_estimators": 500,
+  "learning_rate": 0.03,
+  "max_depth": 3,
+  "final_r2": 0.7234,
+  "final_mae": 92656.42,
+  "final_mse": 19257483141.49,
+  "reference_source": "notebook_outputs",
+  "computed_metrics": {
+    "Baseline: Linear Regression": {
+      "mae": 123301.05,
+      "mse": 34443914130.14,
+      "r2": 0.5052
+    },
+    "Refined: Linear Regression (Ridge)": {
+      "mae": 123814.72,
+      "mse": 34648751938.24,
+      "r2": 0.5023
+    },
+    "Baseline: Gradient Boosting": {
+      "mae": 91339.35,
+      "mse": 19748676049.68,
+      "r2": 0.7163
+    },
+    "Refined: Gradient Boosting [FINAL]": {
+      "mae": 93819.29,
+      "mse": 20174660154.39,
+      "r2": 0.7102
+    }
+  }
+}

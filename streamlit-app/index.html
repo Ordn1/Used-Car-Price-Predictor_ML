@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-style: normal !important; transition: background 0.3s ease, color 0.3s ease; }
+
+/* Custom Properties adapting between Light/Dark */
+:root {
+    --bg-main: #0a0a0a; --bg-left: #0a0a0a; --text-main: #ffffff; --text-muted: rgba(255,255,255,0.6);
+    --text-label: rgba(255,255,255,0.5); --border-color: #1f1f1f; --btn-bg: #3b82f6; --btn-hover: #60a5fa;
+  --fade-grad: linear-gradient(to right, #0a0a0a 0%, transparent 100%);
+  --overlay-grad: linear-gradient(to bottom, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.85) 100%);
+  --err-bg: rgba(220,50,50,0.1); --err-border: #e05252; --shadow-dark: rgba(0,0,0,0.6);
+    --tog-hover: rgba(255,255,255,0.45); --tog-idle: rgba(255,255,255,0.2);
+    --pred-chip-bg: rgba(0,0,0,0.36); --pred-chip-border: rgba(255,255,255,0.2);
+    --pred-chip-key: #dadada; --pred-chip-value: #ffffff; --pred-note: #d8d8d8;
+    --pred-rule: rgba(255,255,255,0.62);
+    --nav-bg: rgba(18,18,18,0.72); --nav-border: rgba(255,255,255,0.16); --nav-item: rgba(255,255,255,0.75);
+    --nav-item-active: #ffffff; --nav-item-active-bg: rgba(255,255,255,0.12);
+    --history-center-bg: rgba(0,0,0,0.33); --history-text-soft: rgba(255,255,255,0.78);
+    --line-soft: rgba(255,255,255,0.16);
+    --edge-fade-start: rgba(10,10,10,0.52); --edge-fade-mid: rgba(10,10,10,0.14);
+    --card-bg: rgba(255,255,255,0.05); --card-strong: rgba(255,255,255,0.08);
+    --positive-accent: #67e8f9; --negative-accent: #fb923c; --chart-axis: rgba(255,255,255,0.85);
+}
+
+body.light-mode {
+  --bg-main: #fcfcfc; --bg-left: #fcfcfc; --text-main: #1a1a1a; --text-muted: rgba(0,0,0,0.6);
+  --text-label: rgba(0,0,0,0.5); --border-color: #d1d1d1; --btn-bg: #2563eb; --btn-hover: #3b82f6;
+  --fade-grad: linear-gradient(to right, #fcfcfc 0%, transparent 100%);
+  --overlay-grad: linear-gradient(to bottom, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.7) 100%);
+  --tog-hover: rgba(0,0,0,0.6); --tog-idle: rgba(0,0,0,0.3); --shadow-dark: rgba(255,255,255,0);
+    --pred-chip-bg: rgba(255,255,255,0.78); --pred-chip-border: rgba(0,0,0,0.14);
+    --pred-chip-key: rgba(0,0,0,0.63); --pred-chip-value: #1b1b1b; --pred-note: rgba(0,0,0,0.74);
+    --pred-rule: rgba(255,255,255,0.78);
+    --nav-bg: rgba(255,255,255,0.8); --nav-border: rgba(0,0,0,0.14); --nav-item: rgba(0,0,0,0.67);
+    --nav-item-active: #111111; --nav-item-active-bg: rgba(0,0,0,0.09);
+    --history-center-bg: rgba(255,255,255,0.66); --history-text-soft: rgba(0,0,0,0.76);
+    --line-soft: rgba(0,0,0,0.2);
+    --edge-fade-start: rgba(252,252,252,0.58); --edge-fade-mid: rgba(252,252,252,0.14);
+    --card-bg: rgba(255,255,255,0.5); --card-strong: rgba(255,255,255,0.74);
+    --positive-accent: #0f766e; --negative-accent: #c2410c; --chart-axis: rgba(0,0,0,0.85);
+}
+
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-main); font-family: 'Georgia', 'Times New Roman', serif; color: var(--text-main); }
+.app { width: 100%; height: 100%; position: relative; }
+
+.top-nav-wrap {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 120;
+    pointer-events: auto;
+    touch-action: manipulation;
+}
+
+.app-nav {
+    background: var(--nav-bg);
+    border: 1px solid var(--nav-border);
+    border-radius: 999px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    max-width: min(96vw, 880px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.28);
+    pointer-events: auto;
+    touch-action: manipulation;
+}
+
+.nav-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--nav-item);
+    cursor: pointer;
+    user-select: none;
+    pointer-events: auto;
+    touch-action: manipulation;
+    transition: color 0.2s ease, background 0.2s ease, transform 0.12s ease;
+}
+
+.nav-item:hover { transform: translateY(-1px); }
+
+.nav-item.active {
+    color: var(--nav-item-active);
+    background: var(--nav-item-active-bg);
+}
+
+.nav-divider {
+    width: 1px;
+    height: 18px;
+    margin: 0 4px;
+    background: var(--nav-border);
+}
+
+.currency-item {
+    appearance: none;
+    background: transparent;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--nav-item);
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease, transform 0.12s ease;
+}
+
+.currency-item:hover { transform: translateY(-1px); }
+
+.currency-item.active {
+    color: var(--nav-item-active);
+    background: var(--nav-item-active-bg);
+}
+
+.page {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.page.active { display: block; }
+
+.shell { display: flex; width: 100%; height: 100%; overflow: hidden; }
+
+/* LEFT PANEL */
+.left { width: 45%; max-width: 500px; flex-shrink: 0; height: 100%; background: var(--bg-left); display: flex; flex-direction: column; overflow: hidden; padding: 5vh 4vw; z-index: 2; position: relative; border-right: 1px solid var(--border-color); box-shadow: 10px 0 30px var(--shadow-dark); }
+.right { flex: 1; height: 100%; position: relative; overflow: hidden; background: #000; }
+
+.city-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: opacity 0.4s ease; display: block; min-height: 100%; }
+.city-overlay { position: absolute; inset: 0; background: var(--overlay-grad); z-index: 1; pointer-events: none; }
+.fade-div { position: absolute; left: 0; top: 0; bottom: 0; width: 16vw; background: var(--fade-grad); z-index: 2; pointer-events: none; }
+.city-lbl { position: absolute; bottom: 5vh; left: 3vw; z-index: 3; font-size: clamp(28px, 6vw, 70px); font-weight: 700; text-transform: uppercase; text-shadow: 0 4px 20px rgba(0,0,0,0.7); color: #fff; line-height: 1; pointer-events: none; }
+
+/* PREDICTION OVERLAY - Center Right */
+.pred-box {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    pointer-events: none;
+    width: min(92%, 760px);
+    animation: fadeUp 0.55s cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 18px)) scale(0.985); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.pred-price-row { display: flex; align-items: flex-start; justify-content: center; gap: 8px; text-shadow: 0 4px 24px rgba(0,0,0,0.7); }
+.pred-sym { font-size: clamp(20px, 2.8vw, 34px); color: #fff; margin-top: 8px; }
+.pred-num {
+    font-size: clamp(48px, 8vw, 104px);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #fff;
+    line-height: 0.95;
+}
+.pred-rule { width: 116px; height: 1px; background: var(--pred-rule); margin: 14px auto; box-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+.pred-lbl { font-size: clamp(11px, 1.02vw, 14px); color: #f1f1f1; text-transform: uppercase; letter-spacing: 0.22em; text-shadow: 0 2px 12px rgba(0,0,0,0.9); }
+.pred-rng { font-size: clamp(13px, 1.08vw, 16px); color: #e3e3e3; margin-top: 5px; text-shadow: 0 2px 12px rgba(0,0,0,0.9); }
+.pred-analytics {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.ana-chip {
+    min-width: 136px;
+    background: var(--pred-chip-bg);
+    border: 1px solid var(--pred-chip-border);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+    backdrop-filter: blur(6px);
+}
+.ana-chip .k {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pred-chip-key);
+}
+.ana-chip .v {
+    display: block;
+    margin-top: 2px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--pred-chip-value);
+}
+.pred-calc {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.calc-pill {
+    background: rgba(0,0,0,0.27);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #e5e5e5;
+}
+.pred-note {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--pred-note);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+}
+.pred-factor-grid {
+    margin: 14px auto 0;
+    width: min(100%, 520px);
+    display: grid;
+    gap: 8px;
+}
+.factor-row {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr) 56px;
+    align-items: center;
+    gap: 10px;
+}
+.factor-label,
+.factor-value {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #f1f1f1;
+}
+.factor-value { text-align: right; }
+.factor-track {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.35);
+}
+.factor-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+}
+.factor-fill.negative { background: linear-gradient(90deg, rgba(251,146,60,0.9), rgba(249,115,22,1)); }
+.factor-fill.positive { background: linear-gradient(90deg, rgba(103,232,249,0.88), rgba(59,130,246,0.95)); }
+.factor-scale-note {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pred-note);
+    text-align: left;
+}
+.pred-subfacts {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+.subfact-card {
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 14px;
+    background: rgba(0,0,0,0.22);
+    backdrop-filter: blur(4px);
+}
+.subfact-card .k {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.74);
+}
+.subfact-card .v {
+    display: block;
+    margin-top: 5px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+.pred-loader {
+    width: 28px;
+    height: 28px;
+    margin: 8px auto 0;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* HISTORY PAGE */
+.history-scene,
+.about-scene {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: clamp(130px, 12vw, 170px) minmax(0, 1fr) clamp(130px, 12vw, 170px);
+    overflow: hidden;
+}
+
+.side-pane {
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #070707;
+}
+
+.side-pane.left::before,
+.side-pane.right::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.side-pane.left::before {
+    width: clamp(18px, 3vw, 52px);
+    right: 0;
+    background: linear-gradient(to left, rgba(10,10,10,0.22) 0%, rgba(10,10,10,0.08) 42%, rgba(0,0,0,0) 100%);
+}
+
+.side-pane.right::before {
+    width: clamp(48px, 7vw, 128px);
+    left: 0;
+    background: linear-gradient(to right, var(--edge-fade-start) 0%, var(--edge-fade-mid) 46%, rgba(0,0,0,0) 100%);
+}
+
+.side-pane.left::after,
+.side-pane.right::after {
+    display: none;
+}
+
+.history-scene #historyImageLeft,
+.about-scene #aboutImageLeft {
+    filter: saturate(1.08) contrast(1.03) brightness(1.02);
+    background-size: cover;
+    background-position: right center;
+}
+
+.history-scene #historyImageRight,
+.about-scene #aboutImageRight {
+    filter: saturate(1.08) contrast(1.03) brightness(1.02);
+    background-size: cover;
+    background-position: left center;
+}
+
+.center-pane {
+    padding: 12vh 2.9vw 6.2vh;
+    background: var(--history-center-bg);
+    backdrop-filter: blur(10px);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sticky-head {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding-bottom: 10px;
+    background: linear-gradient(to bottom, var(--history-center-bg) 0%, var(--history-center-bg) 70%, rgba(0,0,0,0) 100%);
+}
+
+.center-title {
+    font-size: clamp(34px, 4.1vw, 58px);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1;
+}
+
+.center-subtitle {
+    margin-top: 10px;
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+
+.kpi-row {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.kpi-item {
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid var(--line-soft);
+}
+
+.kpi-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+
+.kpi-value {
+    margin-top: 10px;
+    font-size: clamp(24px, 2.35vw, 38px);
+    line-height: 1;
+    font-weight: 700;
+}
+
+.history-table-wrap {
+    margin-top: 22px;
+    min-height: 0;
+    padding-right: 4px;
+}
+.analytics-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+.analytics-card {
+    padding: 16px;
+    border: 1px solid var(--line-soft);
+    border-radius: 18px;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+}
+.card-title {
+    font-size: 13px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+.card-subtitle {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--history-text-soft);
+}
+.chart-box {
+    margin-top: 12px;
+    min-height: 240px;
+}
+.chart-empty {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+    border: 1px dashed var(--line-soft);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+}
+.insight-card { margin-top: 18px; }
+.insight-list {
+    margin-top: 10px;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+}
+.insight-list li {
+    font-size: 13px;
+    color: var(--history-text-soft);
+    line-height: 1.5;
+}
+
+.history-content-scroll,
+.about-content-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.history-content-scroll::-webkit-scrollbar,
+.about-content-scroll::-webkit-scrollbar { width: 5px; }
+
+.history-content-scroll::-webkit-scrollbar-thumb,
+.about-content-scroll::-webkit-scrollbar-thumb { background: var(--line-soft); border-radius: 4px; }
+
+.history-table-wrap::-webkit-scrollbar { width: 5px; }
+.history-table-wrap::-webkit-scrollbar-thumb { background: var(--line-soft); border-radius: 4px; }
+
+.history-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 0.8fr 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.history-row.header {
+    padding-top: 0;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+
+.history-cell { font-size: 13px; }
+.history-cell.price { font-size: 17px; font-weight: 700; }
+.history-cell.soft { color: var(--history-text-soft); }
+
+.history-empty {
+    margin-top: 20px;
+    font-size: 13px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+
+/* ABOUT PAGE */
+.about-layout {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    min-height: 0;
+}
+
+.about-section {
+    min-height: 0;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.about-section::-webkit-scrollbar { width: 4px; }
+.about-section::-webkit-scrollbar-thumb { background: var(--line-soft); border-radius: 4px; }
+
+.about-h {
+    margin-top: 16px;
+    padding-bottom: 7px;
+    border-bottom: 1.5px solid var(--line-soft);
+    font-size: 13px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.about-h:first-child { margin-top: 0; }
+
+.about-p {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.58;
+    color: var(--history-text-soft);
+}
+
+.about-list {
+    margin-top: 10px;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+}
+
+.about-list li {
+    font-size: 13px;
+    color: var(--history-text-soft);
+    line-height: 1.5;
+}
+
+.about-metrics {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+}
+
+.metric-item {
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.metric-item .k {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+
+.metric-item .v {
+    display: block;
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.about-live {
+    margin-top: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
+}
+.about-chip-list {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.about-chip {
+    padding: 7px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line-soft);
+    background: var(--card-bg);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-main);
+}
+.about-stat-grid {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 14px;
+}
+.about-stat-card {
+    padding: 11px 0 12px;
+    border-bottom: 1px solid var(--line-soft);
+}
+.about-stat-card .k {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+.about-stat-card .v {
+    display: block;
+    margin-top: 5px;
+    font-size: 15px;
+    font-weight: 700;
+}
+.structure-grid {
+    margin-top: 10px;
+    display: grid;
+    gap: 0;
+}
+.structure-card {
+    padding: 11px 0 12px;
+    border-bottom: 1px solid var(--line-soft);
+}
+.structure-folder {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+.structure-purpose {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-main);
+}
+.stack-grid {
+    margin-top: 10px;
+    display: grid;
+    gap: 0;
+}
+.stack-card {
+    padding: 11px 0 12px;
+    border-bottom: 1px solid var(--line-soft);
+}
+.stack-card .k {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--history-text-soft);
+}
+.stack-card .v {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.live-title {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.live-desc {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--history-text-soft);
+    line-height: 1.5;
+}
+
+@media (max-width: 1200px) {
+    .history-scene,
+    .about-scene {
+        grid-template-columns: clamp(96px, 14vw, 130px) minmax(0, 1fr) clamp(96px, 14vw, 130px);
+    }
+}
+
+@media (max-width: 900px) {
+    .history-scene,
+    .about-scene {
+        grid-template-columns: 1fr;
+    }
+    .side-pane { display: none; }
+    .center-pane { padding-top: 13vh; }
+    .kpi-row { grid-template-columns: 1fr; }
+    .analytics-grid { grid-template-columns: 1fr; }
+    .about-layout { grid-template-columns: 1fr; }
+    .pred-subfacts { grid-template-columns: 1fr; }
+    .about-stat-grid { grid-template-columns: 1fr; }
+}
+
+
+/* FORM ELEMENTS */
+.headline { font-size: clamp(24px, 3.5vw, 48px); font-weight: 700; text-transform: uppercase; line-height: 1.1; margin-bottom: 4px; flex-shrink: 0; }
+.subtitle { font-size: clamp(8px, 0.8vw, 11px); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4vh; flex-shrink: 0; font-weight: 600;}
+
+.form-wrap { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; margin-bottom: 2vh; padding-right: 1vw;}
+.form-wrap::-webkit-scrollbar { width: 4px; }
+.form-wrap::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2vw; row-gap: 3vh; margin: auto 0; }
+.field-full { grid-column: 1 / -1; }
+.field-group { display: flex; flex-direction: column; }
+.field-label { font-size: clamp(9px, 0.8vw, 11px); color: var(--text-label); text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 6px; font-weight: 600; }
+
+.sel, .inp { width: 100%; background: transparent; border: none; border-bottom: 1.5px solid var(--border-color); color: var(--text-main); font-family: 'Times New Roman', Georgia, serif; font-size: clamp(12px, 1.1vw, 16px); padding: 5px 0; outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; cursor: pointer; border-radius: 0; }
+.sel:focus, .inp:focus { border-bottom-color: var(--text-main); }
+.sel option { background: var(--bg-main); color: var(--text-main); }
+.inp::placeholder { color: var(--text-muted); opacity: 0.5; }
+.sel-wrap { position: relative; }
+.sel-wrap::after { content: '›'; position: absolute; right: 1px; top: 50%; transform: translateY(-50%) rotate(90deg); color: var(--text-muted); font-size: 16px; pointer-events: none; }
+
+.tog-row, .bod-row { display: flex; gap: 14px; padding: 4px 0; flex-wrap: wrap; }
+.tog, .bod { font-size: clamp(9px, 0.9vw, 12px); font-weight: 700; text-transform: uppercase; color: var(--tog-idle); cursor: pointer; padding-bottom: 3px; border-bottom: 1.5px solid transparent; transition: all 0.15s ease; user-select: none; }
+.tog:hover, .bod:hover { color: var(--tog-hover); }
+.tog.active, .bod.active { color: var(--text-main); border-bottom-color: var(--text-main); }
+
+.btn { width: 100%; background: var(--btn-bg); color: #fff; border: none; padding: clamp(14px, 2.5vh, 20px); font-family: 'Times New Roman', Georgia, serif; font-size: clamp(12px, 1vw, 15px); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; border-radius: 4px; cursor: pointer; flex-shrink: 0; transition: background 0.2s, transform 0.1s; }
+.btn:hover { background: var(--btn-hover); box-shadow: 0 0 16px rgba(96,165,250,0.3); }
+.btn:active { transform: scale(0.99); }
+
+.err { background: var(--err-bg); border-left: 3px solid var(--err-border); color: var(--err-border); font-size: clamp(11px, 0.9vw, 13px); padding: 10px 14px; margin-bottom: 2vh; border-radius: 0 3px 3px 0; flex-shrink: 0; display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav-wrap">
+        <div class="app-nav" id="appNav">
+            <span class="nav-item active" data-page="predictor">Predictor</span>
+            <span class="nav-item" data-page="history">Prediction History</span>
+            <span class="nav-item" data-page="about">About</span>
+            <span class="nav-divider" aria-hidden="true"></span>
+            <button class="currency-item active" type="button" data-currency="inr">₹ INR</button>
+            <button class="currency-item" type="button" data-currency="php">₱ Peso</button>
+        </div>
+    </div>
+
+    <div class="page active" id="page-predictor">
+        <div class="shell">
+            <div class="left">
+                <div class="headline">Find Your Car's<br>True Value</div>
+                <div class="subtitle">Powered by Machine Learning</div>
+                <div class="err" id="errDiv"></div>
+
+                <div class="form-wrap">
+                    <div class="field-grid">
+                        <div class="field-group">
+                            <span class="field-label">Year of Manufacture</span>
+                            <div class="sel-wrap"><select class="sel" id="yearSel"><option value="X">X</option></select></div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">Kilometers Run</span>
+                            <input class="inp" type="number" id="kmsInput" min="0" max="500000" placeholder="e.g. 45000"/>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">Fuel Type</span>
+                            <div class="sel-wrap"><select class="sel" id="fuelSel"><option value="X">X</option></select></div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">Transmission</span>
+                            <div class="tog-row" id="transRow"></div>
+                        </div>
+                        <div class="field-group field-full">
+                            <span class="field-label">Body Type</span>
+                            <div class="bod-row" id="bodyRow"></div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">City</span>
+                            <div class="sel-wrap"><select class="sel" id="citySel"><option value="X">X</option></select></div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">Times Viewed</span>
+                            <input class="inp" type="number" id="timesInput" min="0" max="100000" placeholder="e.g. 100"/>
+                        </div>
+                    </div>
+        </div>
+
+                <button class="btn" onclick="submitForm()">Predict Price</button>
+      </div>
+
+            <div class="right">
+                <img class="city-img" id="cityImg" src="" alt=""/>
+                <div class="city-overlay"></div>
+                <div class="fade-div"></div>
+                <div class="city-lbl" id="cityLabel"></div>
+            </div>
+        </div>
+  </div>
+
+    <div class="page" id="page-history">
+        <div class="history-scene">
+            <div class="side-pane left" id="historyImageLeft" aria-label="History Left"></div>
+            <div class="center-pane">
+                <div class="sticky-head">
+                    <div class="center-title">Prediction History</div>
+                    <div class="center-subtitle">Track your model usage and pricing confidence</div>
+                </div>
+
+                <div class="history-content-scroll">
+                    <div class="kpi-row">
+                        <div class="kpi-item">
+                            <div class="kpi-label">Total Predictions</div>
+                            <div class="kpi-value" id="kpiTotal">0</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Average Confidence</div>
+                            <div class="kpi-value" id="kpiConfidence">0%</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Average Predicted Price</div>
+                            <div class="kpi-value" id="kpiAvgPrice">INR 0</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Median Price</div>
+                            <div class="kpi-value" id="kpiMedianPrice">INR 0</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Highest Saved Price</div>
+                            <div class="kpi-value" id="kpiHighestPrice">INR 0</div>
+                        </div>
+                        <div class="kpi-item">
+                            <div class="kpi-label">Lowest Saved Price</div>
+                            <div class="kpi-value" id="kpiLowestPrice">INR 0</div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="card-title">Price Trend</div>
+                            <div class="card-subtitle">Saved predictions plotted chronologically to show valuation movement over time.</div>
+                            <div class="chart-box" id="historyPriceTrendChart"></div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="card-title">City Activity</div>
+                            <div class="card-subtitle">Prediction volume per city, with hover details for average value and confidence.</div>
+                            <div class="chart-box" id="historyCityChart"></div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="card-title">Mileage vs Price</div>
+                            <div class="card-subtitle">Each point is a saved prediction, linking kilometers run to predicted market value.</div>
+                            <div class="chart-box" id="historyScatterChart"></div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="card-title">Fuel Mix</div>
+                            <div class="card-subtitle">Distribution of saved predictions by fuel type.</div>
+                            <div class="chart-box" id="historyFuelChart"></div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card insight-card">
+                        <div class="card-title">History Insights</div>
+                        <ul class="insight-list" id="historyInsights"></ul>
+                    </div>
+
+                    <div class="history-table-wrap">
+                        <div class="history-row header">
+                            <div>Date / City</div>
+                            <div>Vehicle Inputs</div>
+                            <div>Confidence</div>
+                            <div>Predicted Price</div>
+                        </div>
+                        <div id="historyRows"></div>
+                        <div class="history-empty" id="historyEmpty">No prediction history yet. Run your first prediction.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="side-pane right" id="historyImageRight" aria-label="History Right"></div>
+        </div>
+  </div>
+
+    <div class="page" id="page-about">
+        <div class="about-scene">
+            <div class="side-pane left" id="aboutImageLeft" aria-label="About Left"></div>
+            <div class="center-pane">
+                <div class="sticky-head">
+                    <div class="center-title" id="aboutTitle">About This System</div>
+                    <div class="center-subtitle" id="aboutSubtitle">A machine learning valuation framework for used cars</div>
+                </div>
+
+                <div class="about-content-scroll">
+                    <div class="about-layout">
+                        <div class="about-section">
+                            <div class="about-h">System Purpose</div>
+                            <div class="about-p" id="aboutPurpose">-</div>
+
+                            <div class="about-h">Business Problem</div>
+                            <div class="about-p" id="aboutProblem">-</div>
+
+                            <div class="about-h">How The AI Was Trained</div>
+                            <ol class="about-list" id="aboutTrainingFlow"></ol>
+
+                            <div class="about-h">How The Clockwork Works</div>
+                            <ol class="about-list" id="aboutClockworkFlow"></ol>
+
+                            <div class="about-h">Raw Inputs Used By The Model</div>
+                            <div class="about-chip-list" id="aboutRawInputs"></div>
+
+                            <div class="about-h">Engineered Features</div>
+                            <ul class="about-list" id="aboutEngineeredFeatures"></ul>
+
+                            <div class="about-h">Confidence Logic</div>
+                            <div class="about-p" id="aboutConfidenceRule">-</div>
+
+                            <div class="about-h">Project Structure</div>
+                            <div class="structure-grid" id="aboutProjectStructure"></div>
+
+                            <div class="about-h">Runtime Topology</div>
+                            <div class="stack-grid" id="aboutRuntimeStack"></div>
+                        </div>
+
+                        <div class="about-section">
+                            <div class="about-h">System Analytics</div>
+                            <div class="about-metrics">
+                                <div class="metric-item"><span class="k">Records</span><span class="v" id="aboutRecordCount">-</span></div>
+                                <div class="metric-item"><span class="k">Input Features</span><span class="v" id="aboutFeatureCount">-</span></div>
+                                <div class="metric-item"><span class="k">Cities</span><span class="v" id="aboutCityCoverage">-</span></div>
+                                <div class="metric-item"><span class="k">Median Price</span><span class="v" id="aboutMedianPrice">-</span></div>
+                                <div class="metric-item"><span class="k">Average Mileage</span><span class="v" id="aboutAvgKms">-</span></div>
+                                <div class="metric-item"><span class="k">Price Range</span><span class="v" id="aboutPriceRange">-</span></div>
+                            </div>
+
+                            <div class="about-h">Top Predictive Inputs</div>
+                            <ul class="about-list" id="aboutTopFeatures"></ul>
+
+                            <div class="about-h">Selected Model Metrics</div>
+                            <div class="about-stat-grid" id="aboutSelectedMetrics"></div>
+
+                            <div class="about-h">Model Comparison</div>
+                            <div class="chart-box" id="aboutModelComparisonChart"></div>
+
+                            <div class="about-h">Feature Importance</div>
+                            <div class="chart-box" id="aboutFeatureImportanceChart"></div>
+
+                            <div class="about-h">Current Mode</div>
+                            <div class="about-live">
+                                <div class="live-title">Live Model</div>
+                                <div class="live-desc"><span id="aboutModelName">-</span> active | Avg confidence <span id="aboutAvgConfidence">-</span> | History entries <span id="aboutHistoryCount">0</span></div>
+                            </div>
+
+                            <div class="about-h">History Snapshot</div>
+                            <ul class="about-list" id="aboutHistoryInsights"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="side-pane right" id="aboutImageRight" aria-label="About Right"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function sendMessageToStreamlitClient(type, data) {
+    const normalizedType = type.startsWith("streamlit:") ? type : `streamlit:${type}`;
+    window.parent.postMessage({isStreamlitMessage: true, type: normalizedType, ...data}, "*");
+}
+
+let CITY_IMAGES = {};
+let HISTORY_IMAGES = {};
+let ABOUT_IMAGES = {};
+const PAGE_MAP = {
+        predictor: 'page-predictor',
+        history: 'page-history',
+    about: 'page-about',
+};
+const CURRENCY_MAP = {
+    inr: { code: 'INR', symbol: '₹', rate: 1, locale: 'en-IN' },
+    php: { code: 'PHP', symbol: '₱', rate: 0.67, locale: 'en-PH' },
+};
+const FACTOR_LIMITS = {
+    agePenalty: 35,
+    mileagePenalty: 45,
+    demandBoost: 18,
+};
+const FACTOR_MIN_WIDTH = 12;
+let APP_STATE = {
+    args: {},
+    currency: 'inr',
+};
+
+function populateOptions(selId, opts, activeVal) {
+    const sel = document.getElementById(selId);
+    sel.innerHTML = opts.map(o => `<option value="${o.toLowerCase()}" ${o.toLowerCase()===(activeVal||'').toString().toLowerCase()?'selected':''}>${o.toUpperCase()}</option>`).join('');
+}
+
+function populateToggles(rowId, opts, activeVal) {
+    const clsName = rowId === 'transRow' ? 'tog' : 'bod';
+    const row = document.getElementById(rowId);
+    row.innerHTML = opts.map(o => `<span class="${clsName} ${o.toLowerCase()===(activeVal||'').toString().toLowerCase()?'active':''}" data-val="${o.toLowerCase()}">${o.toUpperCase()}</span>`).join('');
+    
+    document.querySelectorAll(`#${rowId} .${clsName}`).forEach(el => {
+        el.addEventListener('click', () => {
+            document.querySelectorAll(`#${rowId} .${clsName}`).forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+        });
+    });
+}
+
+function formatDateTime(rawTs) {
+    if (!rawTs) return '-';
+    const d = new Date(rawTs);
+    if (Number.isNaN(d.getTime())) return rawTs;
+    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function safeNumber(value, fallback = 0) {
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function getCurrencyConfig() {
+    return CURRENCY_MAP[APP_STATE.currency] || CURRENCY_MAP.inr;
+}
+
+function convertCurrency(value) {
+    return safeNumber(value) * getCurrencyConfig().rate;
+}
+
+function formatCurrencyNumber(value) {
+    const currency = getCurrencyConfig();
+    return convertCurrency(value).toLocaleString(currency.locale, { maximumFractionDigits: 0 });
+}
+
+function formatCurrency(value) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return '-';
+    const currency = getCurrencyConfig();
+    return `${currency.symbol}${formatCurrencyNumber(numeric)}`;
+}
+
+function extractNumericCurrency(rawValue, formattedValue = '') {
+    const rawNumeric = Number(rawValue);
+    if (Number.isFinite(rawNumeric)) {
+        return rawNumeric;
+    }
+
+    const cleaned = String(formattedValue || '').replace(/[^0-9.-]/g, '');
+    if (!cleaned) {
+        return null;
+    }
+
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
+function formatNumericMetric(value, digits = 0) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return '-';
+    return numeric.toLocaleString(undefined, {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+    });
+}
+
+function formatSignedMetric(value, digits = 4) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return '-';
+    return `${numeric >= 0 ? '+' : ''}${numeric.toFixed(digits)}`;
+}
+
+function formatMetricCardValue(item) {
+    const format = item?.format || 'text';
+    const rawValue = item?.rawValue;
+
+    if (format === 'currency') return formatCurrency(rawValue);
+    if (format === 'count') return formatNumericMetric(rawValue, 0);
+    if (format === 'score') return formatNumericMetric(rawValue, 4);
+    if (format === 'delta') return formatSignedMetric(rawValue, 4);
+    if (format === 'number') return formatNumericMetric(rawValue, 0);
+    return item?.value || '-';
+}
+
+function buildHistoryInsights(summary) {
+    if (!Number(summary.totalPredictions || 0)) {
+        return ['Run and save predictions to unlock charts, trend lines, and segment analytics.'];
+    }
+
+    const highestPrice = extractNumericCurrency(summary.highestPredictedPriceValue, summary.highestPredictedPrice);
+    const topCity = summary.topCity || '-';
+    const avgConfidence = summary.avgConfidence || `${Math.round(safeNumber(summary.avgConfidenceValue))}%`;
+
+    return [
+        highestPrice === null
+            ? 'Saved valuation highlights appear after your first stored price point syncs.'
+            : `Highest saved valuation so far is ${formatCurrency(highestPrice)}.`,
+        topCity !== '-' ? `${topCity} currently leads prediction activity.` : 'Run more predictions to reveal city trends.',
+        `Average model confidence across saved predictions is ${avgConfidence}.`,
+    ];
+}
+
+function buildAboutHistoryInsights(about) {
+    if (!Number(about.historyCount || 0)) {
+        return ['Run and save predictions to unlock charts, trend lines, and segment analytics.'];
+    }
+
+    const stats = about.historyInsightStats || {};
+    const highestPrice = extractNumericCurrency(stats.highestPredictedPriceValue);
+    const topCity = stats.topCity || '-';
+    const avgConfidence = about.avgConfidence || `${Math.round(safeNumber(stats.avgConfidenceValue))}%`;
+
+    return [
+        highestPrice === null
+            ? 'Saved valuation highlights appear after your first stored price point syncs.'
+            : `Highest saved valuation so far is ${formatCurrency(highestPrice)}.`,
+        topCity !== '-' ? `${topCity} currently leads prediction activity.` : 'Run more predictions to reveal city trends.',
+        `Average model confidence across saved predictions is ${avgConfidence}.`,
+    ];
+}
+
+function setActivePage(pageKey, notify = false) {
+    const safePage = PAGE_MAP[pageKey] ? pageKey : 'predictor';
+    Object.entries(PAGE_MAP).forEach(([k, id]) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', k === safePage);
+    });
+    document.querySelectorAll('.nav-item').forEach((item) => {
+        item.classList.toggle('active', item.dataset.page === safePage);
+    });
+
+    if (notify) {
+        const navId = (window.crypto?.randomUUID?.() || `${Date.now()}_${Math.random().toString(36).slice(2)}`);
+        sendMessageToStreamlitClient('setComponentValue', {
+            value: { action: 'navigate', page: safePage, navId },
+            dataType: 'json',
+        });
+    }
+}
+
+function bindNav() {
+    const nav = document.getElementById('appNav');
+    if (!nav || nav.dataset.bound === '1') return;
+    nav.dataset.bound = '1';
+    nav.addEventListener('click', (event) => {
+        const target = event.target.closest('.nav-item');
+        if (!target) return;
+        setActivePage(target.dataset.page, true);
+    });
+}
+
+function rerenderCurrencySensitiveViews() {
+    const args = APP_STATE.args || {};
+    renderPredictionOverlay(args);
+    renderHistoryPage(args);
+    renderAboutPage(args);
+}
+
+function syncCurrencyToggle() {
+    document.querySelectorAll('.currency-item').forEach((item) => {
+        item.classList.toggle('active', item.dataset.currency === APP_STATE.currency);
+    });
+}
+
+function bindCurrencyToggle() {
+    const nav = document.getElementById('appNav');
+    if (!nav || nav.dataset.currencyBound === '1') return;
+    nav.dataset.currencyBound = '1';
+    nav.addEventListener('click', (event) => {
+        const target = event.target.closest('.currency-item');
+        if (!target) return;
+        APP_STATE.currency = target.dataset.currency === 'php' ? 'php' : 'inr';
+        syncCurrencyToggle();
+        rerenderCurrencySensitiveViews();
+        sendMessageToStreamlitClient('setFrameHeight', { height: window.innerHeight });
+    });
+}
+
+function setPaneImage(id, url) {
+    const pane = document.getElementById(id);
+    if (!pane) return;
+    pane.style.backgroundImage = url ? `url("${url}")` : 'none';
+}
+
+function getThemeColors() {
+    const styles = getComputedStyle(document.body);
+    return {
+        text: styles.getPropertyValue('--text-main').trim() || '#ffffff',
+        soft: styles.getPropertyValue('--history-text-soft').trim() || 'rgba(255,255,255,0.78)',
+        line: styles.getPropertyValue('--line-soft').trim() || 'rgba(255,255,255,0.16)',
+        accent: styles.getPropertyValue('--btn-bg').trim() || '#3b82f6',
+        positive: styles.getPropertyValue('--positive-accent').trim() || '#67e8f9',
+        negative: styles.getPropertyValue('--negative-accent').trim() || '#fb923c',
+    };
+}
+
+function renderEmptyChart(id, message) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (window.Plotly) {
+        Plotly.purge(el);
+    }
+    el.innerHTML = `<div class="chart-empty">${message}</div>`;
+}
+
+function renderChart(id, data, layout) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!window.Plotly) {
+        renderEmptyChart(id, 'Chart library unavailable.');
+        return;
+    }
+    Plotly.react(el, data, layout, { displayModeBar: false, responsive: true });
+}
+
+function baseChartLayout(colors, extra = {}) {
+    return {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        margin: { l: 48, r: 20, t: 12, b: 44 },
+        font: { color: colors.text, family: 'Georgia, Times New Roman, serif', size: 11 },
+        xaxis: {
+            color: colors.soft,
+            gridcolor: colors.line,
+            zerolinecolor: colors.line,
+            tickfont: { color: colors.soft },
+        },
+        yaxis: {
+            color: colors.soft,
+            gridcolor: colors.line,
+            zerolinecolor: colors.line,
+            tickfont: { color: colors.soft },
+        },
+        legend: {
+            orientation: 'h',
+            yanchor: 'bottom',
+            y: 1.02,
+            xanchor: 'left',
+            x: 0,
+            font: { color: colors.soft, size: 10 },
+        },
+        ...extra,
+    };
+}
+
+function numericPercent(value) {
+    const parsed = parseInt(String(value || '').replace(/[^\d-]/g, ''), 10);
+    return Number.isFinite(parsed) ? Math.max(0, Math.min(Math.abs(parsed), 100)) : 0;
+}
+
+function scaleFactorWidth(value, key) {
+    const magnitude = numericPercent(value);
+    if (!magnitude) return 0;
+    const ceiling = FACTOR_LIMITS[key] || 100;
+    return Math.min(100, Math.max(FACTOR_MIN_WIDTH, (magnitude / ceiling) * 100));
+}
+
+function renderHistoryCharts(summary) {
+    const colors = getThemeColors();
+    const currency = getCurrencyConfig();
+    const priceTrend = Array.isArray(summary.priceTrend) ? summary.priceTrend : [];
+    const cityBreakdown = Array.isArray(summary.cityBreakdown) ? summary.cityBreakdown : [];
+    const fuelBreakdown = Array.isArray(summary.fuelBreakdown) ? summary.fuelBreakdown : [];
+    const scatter = Array.isArray(summary.mileageScatter) ? summary.mileageScatter : [];
+
+    if (priceTrend.length) {
+        renderChart('historyPriceTrendChart', [
+            {
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Predicted Price',
+                x: priceTrend.map((item) => item.label),
+                y: priceTrend.map((item) => convertCurrency(item.price)),
+                line: { color: colors.accent, width: 3 },
+                marker: { size: 8, color: colors.accent },
+                customdata: priceTrend.map((item) => formatCurrency(item.price)),
+                hovertemplate: '%{x}<br>Price: %{customdata}<extra></extra>',
+            },
+            {
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Confidence',
+                x: priceTrend.map((item) => item.label),
+                y: priceTrend.map((item) => item.confidence),
+                yaxis: 'y2',
+                line: { color: colors.positive, width: 2, dash: 'dot' },
+                marker: { size: 6, color: colors.positive },
+                hovertemplate: '%{x}<br>Confidence: %{y}%<extra></extra>',
+            },
+        ], baseChartLayout(colors, {
+            yaxis: { title: `Price (${currency.code})`, tickprefix: currency.symbol, gridcolor: colors.line, color: colors.soft },
+            yaxis2: {
+                title: 'Confidence %',
+                overlaying: 'y',
+                side: 'right',
+                range: [0, 100],
+                showgrid: false,
+                color: colors.soft,
+            },
+        }));
+    } else {
+        renderEmptyChart('historyPriceTrendChart', 'Need at least one saved prediction to draw a trend.');
+    }
+
+    if (cityBreakdown.length) {
+        renderChart('historyCityChart', [
+            {
+                type: 'bar',
+                orientation: 'h',
+                y: cityBreakdown.map((item) => item.label),
+                x: cityBreakdown.map((item) => item.count),
+                marker: { color: colors.accent, opacity: 0.9 },
+                text: cityBreakdown.map((item) => `Avg ${formatCurrency(item.avgPrice)}`),
+                textposition: 'auto',
+                hovertemplate: '%{y}<br>Predictions: %{x}<br>Average Price: %{customdata[0]}<br>Average Confidence: %{customdata[1]}%<extra></extra>',
+                customdata: cityBreakdown.map((item) => [formatCurrency(item.avgPrice), item.avgConfidence]),
+            },
+        ], baseChartLayout(colors, {
+            margin: { l: 88, r: 20, t: 12, b: 36 },
+            xaxis: { title: 'Saved Predictions', gridcolor: colors.line, color: colors.soft },
+            yaxis: { autorange: 'reversed', gridcolor: 'rgba(0,0,0,0)', color: colors.soft },
+        }));
+    } else {
+        renderEmptyChart('historyCityChart', 'City activity appears after saved predictions exist.');
+    }
+
+    if (scatter.length) {
+        renderChart('historyScatterChart', [
+            {
+                type: 'scatter',
+                mode: 'markers',
+                x: scatter.map((item) => item.x),
+                y: scatter.map((item) => convertCurrency(item.y)),
+                text: scatter.map((item) => item.label),
+                customdata: scatter.map((item) => formatCurrency(item.y)),
+                marker: {
+                    size: scatter.map((item) => Math.max(9, item.confidence / 5)),
+                    color: scatter.map((item) => item.confidence),
+                    colorscale: 'Blues',
+                    line: { width: 1, color: colors.line },
+                    opacity: 0.88,
+                },
+                hovertemplate: '%{text}<br>Mileage: %{x:,} km<br>Price: %{customdata}<extra></extra>',
+            },
+        ], baseChartLayout(colors, {
+            xaxis: { title: 'Kilometers Run', gridcolor: colors.line, color: colors.soft },
+            yaxis: { title: `Predicted Price (${currency.code})`, tickprefix: currency.symbol, gridcolor: colors.line, color: colors.soft },
+        }));
+    } else {
+        renderEmptyChart('historyScatterChart', 'Scatter analytics need saved mileage and price points.');
+    }
+
+    if (fuelBreakdown.length) {
+        renderChart('historyFuelChart', [
+            {
+                type: 'pie',
+                labels: fuelBreakdown.map((item) => item.label),
+                values: fuelBreakdown.map((item) => item.count),
+                hole: 0.56,
+                textinfo: 'label+percent',
+                marker: {
+                    colors: [colors.accent, colors.positive, colors.negative, '#a78bfa', '#facc15', '#22c55e'],
+                    line: { color: colors.line, width: 1 },
+                },
+            },
+        ], {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            margin: { l: 12, r: 12, t: 12, b: 12 },
+            font: { color: colors.text, family: 'Georgia, Times New Roman, serif', size: 11 },
+            showlegend: false,
+        });
+    } else {
+        renderEmptyChart('historyFuelChart', 'Fuel mix appears after at least one saved prediction.');
+    }
+}
+
+function renderAboutCharts(about) {
+    const colors = getThemeColors();
+    const featureImportance = Array.isArray(about.featureImportance) ? about.featureImportance : [];
+    const modelComparison = Array.isArray(about.modelComparison) ? about.modelComparison : [];
+
+    if (modelComparison.length) {
+        renderChart('aboutModelComparisonChart', [
+            {
+                type: 'bar',
+                x: modelComparison.map((item) => item.model.replace('Regressor', '')),
+                y: modelComparison.map((item) => item.r2),
+                marker: { color: colors.accent, opacity: 0.9 },
+                text: modelComparison.map((item) => item.r2.toFixed(4)),
+                textposition: 'outside',
+                hovertemplate: '%{x}<br>R2: %{y:.4f}<br>MAE: %{customdata[0]}<br>RMSE: %{customdata[1]}<br>Delta vs Baseline: %{customdata[2]}<extra></extra>',
+                customdata: modelComparison.map((item) => [
+                    formatCurrency(item.mae),
+                    formatCurrency(item.rmse),
+                    formatSignedMetric(item.gap, 4),
+                ]),
+            },
+        ], baseChartLayout(colors, {
+            margin: { l: 56, r: 20, t: 18, b: 88 },
+            yaxis: {
+                title: 'R2 Score',
+                range: [0, Math.max(0.8, ...modelComparison.map((item) => item.r2 + 0.05))],
+                gridcolor: colors.line,
+                color: colors.soft,
+                automargin: true,
+            },
+            xaxis: {
+                gridcolor: 'rgba(0,0,0,0)',
+                color: colors.soft,
+                tickangle: -28,
+                automargin: true,
+            },
+        }));
+    } else {
+        renderEmptyChart('aboutModelComparisonChart', 'Model comparison metadata is not available yet.');
+    }
+
+    if (featureImportance.length) {
+        renderChart('aboutFeatureImportanceChart', [
+            {
+                type: 'bar',
+                orientation: 'h',
+                y: featureImportance.map((item) => item.label).slice().reverse(),
+                x: featureImportance.map((item) => item.percentage).slice().reverse(),
+                marker: { color: colors.positive, opacity: 0.92 },
+                text: featureImportance.map((item) => `${item.percentage}%`).slice().reverse(),
+                textposition: 'auto',
+                hovertemplate: '%{y}<br>Relative Importance: %{x:.2f}%<extra></extra>',
+            },
+        ], baseChartLayout(colors, {
+            margin: { l: 150, r: 28, t: 18, b: 42 },
+            xaxis: {
+                title: 'Relative Influence (%)',
+                gridcolor: colors.line,
+                color: colors.soft,
+                automargin: true,
+            },
+            yaxis: {
+                gridcolor: 'rgba(0,0,0,0)',
+                color: colors.soft,
+                automargin: true,
+            },
+        }));
+    } else {
+        renderEmptyChart('aboutFeatureImportanceChart', 'Feature importance becomes available once model metadata includes it.');
+    }
+}
+
+function renderHistoryPage(args) {
+    const summary = args.historySummary || {};
+    const history = args.history || [];
+    const avgPriceValue = extractNumericCurrency(summary.avgPredictedPriceValue, summary.avgPredictedPrice);
+    const medianPriceValue = extractNumericCurrency(summary.medianPredictedPriceValue, summary.medianPredictedPrice);
+    const highestPriceValue = extractNumericCurrency(summary.highestPredictedPriceValue, summary.highestPredictedPrice);
+    const lowestPriceValue = extractNumericCurrency(summary.lowestPredictedPriceValue, summary.lowestPredictedPrice);
+
+    document.getElementById('kpiTotal').textContent = summary.totalPredictions || 0;
+    document.getElementById('kpiConfidence').textContent = summary.avgConfidence || '0%';
+    document.getElementById('kpiAvgPrice').textContent = avgPriceValue === null ? (summary.avgPredictedPrice || '-') : formatCurrency(avgPriceValue);
+    document.getElementById('kpiMedianPrice').textContent = medianPriceValue === null ? (summary.medianPredictedPrice || '-') : formatCurrency(medianPriceValue);
+    document.getElementById('kpiHighestPrice').textContent = highestPriceValue === null ? (summary.highestPredictedPrice || '-') : formatCurrency(highestPriceValue);
+    document.getElementById('kpiLowestPrice').textContent = lowestPriceValue === null ? (summary.lowestPredictedPrice || '-') : formatCurrency(lowestPriceValue);
+
+    setPaneImage('historyImageLeft', HISTORY_IMAGES.left || '');
+    setPaneImage('historyImageRight', HISTORY_IMAGES.right || '');
+
+    const insights = document.getElementById('historyInsights');
+    const insightItems = buildHistoryInsights(summary);
+    insights.innerHTML = insightItems.map((item) => `<li>${item}</li>`).join('');
+
+    renderHistoryCharts(summary);
+
+    const rows = document.getElementById('historyRows');
+    const empty = document.getElementById('historyEmpty');
+    rows.innerHTML = '';
+
+    if (!history.length) {
+        empty.style.display = 'block';
+        return;
+    }
+
+    empty.style.display = 'none';
+
+    rows.innerHTML = history.map((item) => {
+        const dateCity = `${formatDateTime(item.createdAt)} | ${(item.city || '-').toUpperCase()}`;
+        const vehicle = `${item.yr_mfr || '-'} | ${item.fuel_type || '-'} | ${(item.transmission || '-').toUpperCase()}`;
+        const confidence = item.confidence || '0%';
+                const price = formatCurrency(item.predictedPrice || 0);
+        return `
+          <div class="history-row">
+            <div class="history-cell soft">${dateCity}</div>
+            <div class="history-cell">${vehicle}</div>
+            <div class="history-cell">${confidence}</div>
+            <div class="history-cell price">${price}</div>
+          </div>
+        `;
+    }).join('');
+}
+
+function renderAboutPage(args) {
+    const about = args.aboutAnalytics || {};
+    setPaneImage('aboutImageLeft', ABOUT_IMAGES.left || '');
+    setPaneImage('aboutImageRight', ABOUT_IMAGES.right || '');
+
+    const medianPriceValue = extractNumericCurrency(about.medianPriceValue, about.medianPrice);
+    const priceMinValue = extractNumericCurrency(about.priceMinValue);
+    const priceMaxValue = extractNumericCurrency(about.priceMaxValue);
+
+    document.getElementById('aboutTitle').textContent = 'About This System';
+    document.getElementById('aboutSubtitle').textContent = about.systemTitle || 'Used Car Price Prediction Framework';
+    document.getElementById('aboutPurpose').textContent = about.purpose || '-';
+    document.getElementById('aboutProblem').textContent = about.businessProblem || '-';
+
+    document.getElementById('aboutRecordCount').textContent = about.recordCount || '-';
+    document.getElementById('aboutFeatureCount').textContent = about.featureCount || '-';
+    document.getElementById('aboutCityCoverage').textContent = about.cityCoverage || '-';
+    document.getElementById('aboutMedianPrice').textContent = medianPriceValue === null ? (about.medianPrice || '-') : formatCurrency(medianPriceValue);
+    document.getElementById('aboutAvgKms').textContent = about.avgKms || '-';
+    document.getElementById('aboutPriceRange').textContent = priceMinValue === null || priceMaxValue === null
+        ? (about.priceRange || '-')
+        : `${formatCurrency(priceMinValue)} - ${formatCurrency(priceMaxValue)}`;
+    document.getElementById('aboutModelName').textContent = about.modelName || '-';
+    document.getElementById('aboutAvgConfidence').textContent = about.avgConfidence || '0%';
+    document.getElementById('aboutHistoryCount').textContent = about.historyCount ?? 0;
+    document.getElementById('aboutConfidenceRule').textContent = about.confidenceRule || '-';
+
+    const featureList = document.getElementById('aboutTopFeatures');
+    const trainingFlow = document.getElementById('aboutTrainingFlow');
+    const clockworkFlow = document.getElementById('aboutClockworkFlow');
+    const rawInputs = document.getElementById('aboutRawInputs');
+    const engineeredFeatures = document.getElementById('aboutEngineeredFeatures');
+    const historyInsights = document.getElementById('aboutHistoryInsights');
+    const selectedMetrics = document.getElementById('aboutSelectedMetrics');
+    const projectStructure = document.getElementById('aboutProjectStructure');
+    const runtimeStack = document.getElementById('aboutRuntimeStack');
+
+    const features = Array.isArray(about.topFeatures) ? about.topFeatures : [];
+    const flow = Array.isArray(about.trainingFlow) ? about.trainingFlow : [];
+    const clockwork = Array.isArray(about.clockworkFlow) ? about.clockworkFlow : [];
+    const raw = Array.isArray(about.rawInputs) ? about.rawInputs : [];
+    const engineered = Array.isArray(about.engineeredFeatures) ? about.engineeredFeatures : [];
+    const historyItems = buildAboutHistoryInsights(about);
+    const metricCards = Array.isArray(about.selectedMetrics) ? about.selectedMetrics : [];
+    const structureItems = Array.isArray(about.projectStructure) ? about.projectStructure : [];
+    const stackItems = Array.isArray(about.runtimeStack) ? about.runtimeStack : [];
+
+    featureList.innerHTML = features.map((item) => `<li>${item}</li>`).join('');
+    trainingFlow.innerHTML = flow.map((item) => `<li>${item}</li>`).join('');
+    clockworkFlow.innerHTML = clockwork.map((item) => `<li>${item}</li>`).join('');
+    rawInputs.innerHTML = raw.map((item) => `<span class="about-chip">${item}</span>`).join('');
+    engineeredFeatures.innerHTML = engineered.map((item) => `<li>${item}</li>`).join('');
+    historyInsights.innerHTML = historyItems.map((item) => `<li>${item}</li>`).join('');
+    selectedMetrics.innerHTML = metricCards.map((item) => `
+        <div class="about-stat-card">
+            <span class="k">${item.label || '-'}</span>
+            <span class="v">${formatMetricCardValue(item)}</span>
+        </div>
+    `).join('');
+    projectStructure.innerHTML = structureItems.map((item) => `
+        <div class="structure-card">
+            <span class="structure-folder">${item.folder || '-'}</span>
+            <span class="structure-purpose">${item.purpose || '-'}</span>
+        </div>
+    `).join('');
+    runtimeStack.innerHTML = stackItems.map((item) => `
+        <div class="stack-card">
+            <span class="k">${item.label || '-'}</span>
+            <span class="v">${item.value || '-'}</span>
+        </div>
+    `).join('');
+
+    renderAboutCharts(about);
+}
+
+function renderPredictionOverlay(args) {
+    const right = document.querySelector('.right');
+    let box = document.getElementById('predBox');
+    
+    if (args.predPrice !== null && args.predPrice !== undefined) {
+        if (!box) {
+            box = document.createElement('div');
+            box.className = 'pred-box';
+            box.id = 'predBox';
+            right.appendChild(box);
+        }
+                const currency = getCurrencyConfig();
+                const predictedPrice = safeNumber(args.predPrice);
+                const estimatedRange = `${formatCurrency(predictedPrice * 0.9)} → ${formatCurrency(predictedPrice * 1.1)}`;
+        const analytics = args.predAnalytics || {};
+                const agePenalty = scaleFactorWidth(analytics.agePenalty, 'agePenalty');
+                const mileagePenalty = scaleFactorWidth(analytics.mileagePenalty, 'mileagePenalty');
+                const demandBoost = scaleFactorWidth(analytics.demandBoost, 'demandBoost');
+        box.innerHTML = `
+          <div class="pred-price-row">
+                        <span class="pred-sym">${currency.symbol}</span>
+                        <span class="pred-num">${formatCurrencyNumber(predictedPrice)}</span>
+          </div>
+          <div class="pred-rule"></div>
+          <div class="pred-lbl">ESTIMATED MARKET VALUE</div>
+                    <div class="pred-rng">${estimatedRange}</div>
+                    <div class="pred-analytics">
+                        <div class="ana-chip"><span class="k">Car Age</span><span class="v">${analytics.carAge || '-'}</span></div>
+                        <div class="ana-chip"><span class="k">Mileage</span><span class="v">${analytics.mileage || '-'}</span></div>
+                        <div class="ana-chip"><span class="k">Views</span><span class="v">${analytics.views || '-'}</span></div>
+                        <div class="ana-chip"><span class="k">Confidence</span><span class="v">${analytics.confidence || '-'}</span></div>
+                    </div>
+                    <div class="pred-calc">
+                                                <span class="calc-pill">Age Adjustment ${analytics.agePenalty || '-'}</span>
+                                                <span class="calc-pill">Mileage Adjustment ${analytics.mileagePenalty || '-'}</span>
+                        <span class="calc-pill">Demand Boost ${analytics.demandBoost || '-'}</span>
+                        <span class="calc-pill">${analytics.marketPulse || 'Balanced'}</span>
+                    </div>
+                    <div class="pred-factor-grid">
+                        <div class="factor-row">
+                            <span class="factor-label">Age Penalty</span>
+                            <span class="factor-track"><span class="factor-fill negative" style="width:${agePenalty}%"></span></span>
+                            <span class="factor-value">${analytics.agePenalty || '-'}</span>
+                        </div>
+                        <div class="factor-row">
+                            <span class="factor-label">Mileage Penalty</span>
+                            <span class="factor-track"><span class="factor-fill negative" style="width:${mileagePenalty}%"></span></span>
+                            <span class="factor-value">${analytics.mileagePenalty || '-'}</span>
+                        </div>
+                        <div class="factor-row">
+                            <span class="factor-label">Demand Boost</span>
+                            <span class="factor-track"><span class="factor-fill positive" style="width:${demandBoost}%"></span></span>
+                            <span class="factor-value">${analytics.demandBoost || '-'}</span>
+                        </div>
+                        <div class="factor-scale-note">Bars scale against each factor's modeled ceiling so non-zero adjustments stay readable.</div>
+                    </div>
+                    <div class="pred-subfacts">
+                        <div class="subfact-card"><span class="k">Mileage Band</span><span class="v">${analytics.mileageBand || '-'}</span></div>
+                        <div class="subfact-card"><span class="k">Demand Band</span><span class="v">${analytics.demandBand || '-'}</span></div>
+                        <div class="subfact-card"><span class="k">Estimated Range</span><span class="v">${estimatedRange}</span></div>
+                    </div>
+                    <div class="pred-note">Estimated using encoded category signals, scaled numeric inputs, engineered car age and usage intensity, and learned regression weights.</div>
+        `;
+    } else {
+        if (box) box.remove();
+    }
+}
+
+function showPredictingOverlay() {
+    const right = document.querySelector('.right');
+    let box = document.getElementById('predBox');
+    if (!box) {
+        box = document.createElement('div');
+        box.className = 'pred-box';
+        box.id = 'predBox';
+        right.appendChild(box);
+    }
+    box.innerHTML = `
+      <div class="pred-lbl" style="font-size:13px; color:#fff; letter-spacing:0.22em;">CALCULATING PRICE</div>
+      <div class="pred-loader"></div>
+      <div class="pred-rng" style="margin-top:8px; color:#eee;">Running model inference and analytics...</div>
+    `;
+}
+
+// Receive configuration and state natively from Streamlit Python
+window.addEventListener("message", function(event) {
+    if (event.data.type === "streamlit:render") {
+        const args = event.data.args;
+        APP_STATE.args = args;
+        
+        // Dynamically adapt theme to match Streamlit's Light/Dark mode
+        if (event.data.theme) {
+            if (event.data.theme.base === "light") { document.body.classList.add("light-mode"); }
+            else { document.body.classList.remove("light-mode"); }
+        }
+        
+        CITY_IMAGES = args.cityImages || {};
+        HISTORY_IMAGES = args.historyImages || {};
+        ABOUT_IMAGES = args.aboutImages || {};
+
+        bindNav();
+        bindCurrencyToggle();
+        syncCurrencyToggle();
+        
+        // Only run setup once or if we need a hard refresh
+        populateOptions('yearSel', args.yearOptions, args.yrVal);
+        populateOptions('fuelSel', args.fuelOptions, args.fuelVal);
+        populateOptions('citySel', args.cityOptions, args.cityVal);
+        populateToggles('transRow', args.transOptions, args.transVal);
+        populateToggles('bodyRow', args.bodyOptions, args.bodyVal);
+        
+        document.getElementById('kmsInput').value = args.kmsVal;
+        document.getElementById('timesInput').value = args.tvVal;
+        
+        const cityKey = (args.cityVal || '').toLowerCase();
+        document.getElementById('cityImg').src = CITY_IMAGES[cityKey] || CITY_IMAGES['mumbai'];
+        document.getElementById('cityLabel').textContent = cityKey.toUpperCase();
+        
+        renderPredictionOverlay(args);
+        renderHistoryPage(args);
+        renderAboutPage(args);
+        setActivePage(args.currentPage || 'predictor', false);
+        
+        const errDiv = document.getElementById('errDiv');
+        if (args.errMsg) {
+            errDiv.style.display = 'block';
+            errDiv.textContent = args.errMsg;
+        } else {
+            errDiv.style.display = 'none';
+        }
+        
+        sendMessageToStreamlitClient("setFrameHeight", {height: window.innerHeight});
+    }
+});
+
+document.getElementById('citySel').addEventListener('change', function() {
+    const key = this.value.trim().toLowerCase();
+    const img = document.getElementById('cityImg');
+    img.style.opacity = '0';
+    setTimeout(() => {
+        img.src = CITY_IMAGES[key] || CITY_IMAGES['mumbai'];
+        img.style.opacity = '1';
+        document.getElementById('cityLabel').textContent = this.value.toUpperCase();
+    }, 200);
+});
+
+// Pass data via native Component Bridge (no sandboxed url reload required)
+function submitForm() {
+    const yr    = document.getElementById('yearSel').value;
+    const kms   = document.getElementById('kmsInput').value;
+    const fuel  = document.getElementById('fuelSel').value;
+    const city  = document.getElementById('citySel').value;
+    const tv    = document.getElementById('timesInput').value;
+    const trans = document.querySelector('#transRow .tog.active')?.dataset.val || '';
+    const body  = document.querySelector('#bodyRow .bod.active')?.dataset.val || '';
+    const reqId = (window.crypto?.randomUUID?.() || `${Date.now()}_${Math.random().toString(36).slice(2)}`);
+
+    showPredictingOverlay();
+    
+    sendMessageToStreamlitClient("setComponentValue", {
+        value: { action: 'predict', predict: 1, yr, kms, fuel, city, tv, trans, body, reqId },
+        dataType: "json"
+    });
+}
+
+window.addEventListener("load", function() {
+    sendMessageToStreamlitClient("componentReady", {apiVersion: 1});
+});
+</script>
+</body>
+</html>

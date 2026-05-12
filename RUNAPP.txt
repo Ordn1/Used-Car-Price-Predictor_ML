@@ -1,0 +1,39 @@
+Run this app in either full local mode or direct deployment mode.
+
+Full local mode uses 3 terminals:
+
+Python Service:
+
+PS C:\Users\used-car-price-ml-app> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\jarma\Documents\used-car-price-ml-app\.venv\Scripts\Activate.ps1)
+(.venv) PS C:\Users\jarma\Documents\used-car-price-ml-app> Push-Location py-app
+>> python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+C# API: 
+
+PS C:\Users\used-car-price-ml-app> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\jarma\Documents\used-car-price-ml-app\.venv\Scripts\Activate.ps1)
+(.venv) PS C:\Users\jarma\Documents\used-car-price-ml-app> Push-Location web-api
+>> dotnet run
+
+Streamlit:
+
+PS C:\Users\used-car-price-ml-app> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\jarma\Documents\used-car-price-ml-app\.venv\Scripts\Activate.ps1)
+(.venv) PS C:\Users\jarma\Documents\used-car-price-ml-app> $env:USED_CAR_API_URL = 'http://127.0.0.1:5000'
+>> Push-Location streamlit-app
+>> streamlit run app.py --server.port 8501
+
+Direct deployment mode uses only Streamlit:
+
+PS C:\Users\used-car-price-ml-app> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\jarma\Documents\used-car-price-ml-app\.venv\Scripts\Activate.ps1)
+(.venv) PS C:\Users\jarma\Documents\used-car-price-ml-app> Push-Location streamlit-app
+>> $env:USED_CAR_RUNTIME_MODE = 'direct'
+>> streamlit run app.py --server.port 8501
+
+Direct deployment mode with persistent hosted history uses Streamlit plus Supabase:
+
+PS C:\Users\used-car-price-ml-app> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\jarma\Documents\used-car-price-ml-app\.venv\Scripts\Activate.ps1)
+(.venv) PS C:\Users\jarma\Documents\used-car-price-ml-app> Push-Location streamlit-app
+>> $env:USED_CAR_RUNTIME_MODE = 'direct'
+>> $env:USED_CAR_DB_BACKEND = 'supabase'
+>> $env:USED_CAR_SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co'
+>> $env:USED_CAR_SUPABASE_KEY = 'YOUR_SUPABASE_SERVICE_ROLE_KEY'
+>> streamlit run app.py --server.port 8501
