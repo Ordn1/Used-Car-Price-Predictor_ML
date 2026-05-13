@@ -27,6 +27,30 @@ class PredictionAnalytics(BaseModel):
     demandBoost: str
     confidence: str
     marketPulse: str
+    referenceYear: int
+    carAgeYears: int
+    kmsRunValue: int
+    timesViewedValue: int
+    kmsPerYearValue: float
+    agePenaltyValue: int
+    agePenaltyRaw: float
+    agePenaltyCap: int
+    mileagePenaltyValue: int
+    mileagePenaltyRaw: float
+    mileagePenaltyCap: int
+    demandBoostValue: int
+    demandBoostRaw: float
+    demandBoostCap: int
+    confidenceValue: int
+    confidenceUnclamped: int
+    confidenceBase: int
+    confidenceFloor: int
+    confidenceCeiling: int
+    confidenceAgeImpact: int
+    confidenceMileageImpact: int
+    confidenceDemandImpact: int
+    rangeLowValue: float
+    rangeHighValue: float
 
 
 class FeatureImportanceItem(BaseModel):

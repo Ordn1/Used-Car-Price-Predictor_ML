@@ -23,7 +23,31 @@ public sealed record PredictionAnalytics(
     string MileagePenalty,
     string DemandBoost,
     string Confidence,
-    string MarketPulse
+    string MarketPulse,
+    int ReferenceYear,
+    int CarAgeYears,
+    int KmsRunValue,
+    int TimesViewedValue,
+    double KmsPerYearValue,
+    int AgePenaltyValue,
+    double AgePenaltyRaw,
+    int AgePenaltyCap,
+    int MileagePenaltyValue,
+    double MileagePenaltyRaw,
+    int MileagePenaltyCap,
+    int DemandBoostValue,
+    double DemandBoostRaw,
+    int DemandBoostCap,
+    int ConfidenceValue,
+    int ConfidenceUnclamped,
+    int ConfidenceBase,
+    int ConfidenceFloor,
+    int ConfidenceCeiling,
+    int ConfidenceAgeImpact,
+    int ConfidenceMileageImpact,
+    int ConfidenceDemandImpact,
+    double RangeLowValue,
+    double RangeHighValue
 );
 
 public sealed record PredictionResponse(

@@ -288,6 +288,27 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-m
     background: rgba(0,0,0,0.22);
     backdrop-filter: blur(4px);
 }
+.subfact-card.action-card {
+    appearance: none;
+    width: 100%;
+    cursor: pointer;
+    pointer-events: auto;
+    min-height: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: inherit;
+    font: inherit;
+    transition: transform 0.18s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.subfact-card.action-card:hover {
+    transform: translateY(-1px);
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.24);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+}
 .subfact-card .k {
     display: block;
     font-size: 10px;
@@ -302,6 +323,252 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-m
     font-weight: 700;
     color: #ffffff;
 }
+.subfact-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.1);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+}
+.pred-details-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 260;
+    display: none;
+    pointer-events: none;
+}
+.pred-details-modal.open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    pointer-events: auto;
+}
+.pred-details-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5,7,10,0.68);
+    backdrop-filter: blur(8px);
+}
+.pred-details-dialog {
+    position: relative;
+    width: min(94vw, 1040px);
+    max-height: min(calc(100vh - 48px), 920px);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(17,17,17,0.92) 0%, rgba(10,10,10,0.95) 100%);
+    box-shadow: 0 26px 70px rgba(0,0,0,0.45);
+    overflow: hidden;
+}
+.pred-details-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    appearance: none;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.pred-details-scroll {
+    max-height: min(calc(100vh - 48px), 920px);
+    overflow-y: auto;
+    padding: 34px 28px 26px;
+}
+.pred-details-scroll::-webkit-scrollbar { width: 8px; }
+.pred-details-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 999px; }
+.pred-details-head { padding-right: 96px; }
+.pred-details-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+}
+.pred-details-title {
+    margin-top: 8px;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1;
+    text-transform: uppercase;
+}
+.pred-details-lead {
+    margin-top: 12px;
+    max-width: 780px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.82);
+}
+.detail-callout {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    line-height: 1.65;
+    color: rgba(255,255,255,0.86);
+}
+.detail-sections {
+    margin-top: 22px;
+    display: grid;
+    gap: 16px;
+}
+.detail-section {
+    padding: 18px 18px 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.03);
+}
+.detail-section-h {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.82);
+}
+.detail-section-p {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.76);
+}
+.detail-grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+.detail-grid.two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.detail-card {
+    padding: 14px 14px 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    background: rgba(0,0,0,0.16);
+}
+.detail-card .k {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.62);
+}
+.detail-card .v {
+    display: block;
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+}
+.detail-card .note {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.7);
+}
+.detail-feature-chips {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.detail-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.86);
+}
+.detail-formula-grid {
+    margin-top: 14px;
+    display: grid;
+    gap: 12px;
+}
+.detail-formula-card {
+    padding: 14px 15px 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    background: rgba(0,0,0,0.14);
+}
+.detail-formula-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.82);
+}
+.detail-formula-eq,
+.detail-formula-sub,
+.detail-formula-result {
+    display: block;
+    margin-top: 7px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.82);
+}
+.detail-formula-result strong { color: #fff; }
+.detail-bars {
+    margin-top: 14px;
+    display: grid;
+    gap: 10px;
+}
+.detail-bar-row {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr) 74px;
+    gap: 10px;
+    align-items: center;
+}
+.detail-bar-label,
+.detail-bar-value {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.82);
+}
+.detail-bar-value { text-align: right; }
+.detail-bar-track {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    overflow: hidden;
+}
+.detail-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+}
+.detail-bar-fill.negative { background: linear-gradient(90deg, rgba(251,146,60,0.9), rgba(249,115,22,1)); }
+.detail-bar-fill.positive { background: linear-gradient(90deg, rgba(103,232,249,0.9), rgba(59,130,246,0.95)); }
+.detail-bullets {
+    margin-top: 12px;
+    padding-left: 18px;
+    display: grid;
+    gap: 7px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.7;
+}
+.detail-bullets li::marker { color: rgba(255,255,255,0.66); }
 .pred-loader {
     width: 28px;
     height: 28px;
@@ -739,6 +1006,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-m
     .about-layout { grid-template-columns: 1fr; }
     .pred-subfacts { grid-template-columns: 1fr; }
     .about-stat-grid { grid-template-columns: 1fr; }
+    .pred-details-modal.open { padding: 12px; }
+    .pred-details-dialog { width: min(96vw, 1040px); max-height: 92vh; }
+    .pred-details-scroll { padding: 24px 16px 18px; }
+    .pred-details-head { padding-right: 64px; }
+    .detail-grid,
+    .detail-grid.two-col { grid-template-columns: 1fr; }
+    .detail-bar-row { grid-template-columns: 1fr; }
 }
 
 
@@ -784,6 +1058,14 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-m
             <span class="nav-divider" aria-hidden="true"></span>
             <button class="currency-item active" type="button" data-currency="inr">₹ INR</button>
             <button class="currency-item" type="button" data-currency="php">₱ Peso</button>
+        </div>
+    </div>
+
+    <div class="pred-details-modal" id="predictionDetailsModal" aria-hidden="true">
+        <div class="pred-details-backdrop" onclick="closePredictionDetailsModal()"></div>
+        <div class="pred-details-dialog" role="dialog" aria-modal="true" aria-labelledby="predictionDetailsTitle">
+            <button class="pred-details-close" type="button" onclick="closePredictionDetailsModal()">Close</button>
+            <div class="pred-details-scroll" id="predictionDetailsContent"></div>
         </div>
     </div>
 
@@ -878,8 +1160,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg-m
 
                     <div class="analytics-grid">
                         <div class="analytics-card">
-                            <div class="card-title">Price Trend</div>
-                            <div class="card-subtitle">Saved predictions plotted chronologically to show valuation movement over time.</div>
+                            <div class="card-title">Prediction Timeline</div>
+                            <div class="card-subtitle">Latest saved predictions shown in order. Hover to inspect the exact time, city, price, and confidence of each run.</div>
                             <div class="chart-box" id="historyPriceTrendChart"></div>
                         </div>
                         <div class="analytics-card">
@@ -1010,6 +1292,7 @@ let CITY_IMAGES = {};
 let HISTORY_IMAGES = {};
 let ABOUT_IMAGES = {};
 const DEFAULT_CITY_IMAGE_KEY = 'mumbai';
+let PREDICTION_DETAILS_CONTEXT = null;
 const PAGE_MAP = {
         predictor: 'page-predictor',
         history: 'page-history',
@@ -1161,6 +1444,9 @@ function buildAboutHistoryInsights(about) {
 
 function setActivePage(pageKey, notify = false) {
     const safePage = PAGE_MAP[pageKey] ? pageKey : 'predictor';
+    if (safePage !== 'predictor') {
+        closePredictionDetailsModal();
+    }
     Object.entries(PAGE_MAP).forEach(([k, id]) => {
         const el = document.getElementById(id);
         if (el) el.classList.toggle('active', k === safePage);
@@ -1304,30 +1590,49 @@ function renderHistoryCharts(summary) {
     const scatter = Array.isArray(summary.mileageScatter) ? summary.mileageScatter : [];
 
     if (priceTrend.length) {
+        const timelineOrder = priceTrend.map((item, index) => safeNumber(item.sequence, index + 1));
         renderChart('historyPriceTrendChart', [
             {
                 type: 'scatter',
                 mode: 'lines+markers',
                 name: 'Predicted Price',
-                x: priceTrend.map((item) => item.label),
+                x: timelineOrder,
                 y: priceTrend.map((item) => convertCurrency(item.price)),
                 line: { color: colors.accent, width: 3 },
-                marker: { size: 8, color: colors.accent },
-                customdata: priceTrend.map((item) => formatCurrency(item.price)),
-                hovertemplate: '%{x}<br>Price: %{customdata}<extra></extra>',
+                marker: {
+                    size: priceTrend.map((item) => Math.max(9, safeNumber(item.confidence) / 5)),
+                    color: colors.accent,
+                },
+                customdata: priceTrend.map((item) => [
+                    item.label || '-',
+                    item.city || '-',
+                    formatCurrency(item.price),
+                    safeNumber(item.confidence),
+                ]),
+                hovertemplate: 'Run %{x}<br>Saved: %{customdata[0]}<br>City: %{customdata[1]}<br>Price: %{customdata[2]}<br>Confidence: %{customdata[3]}%<extra></extra>',
             },
             {
                 type: 'scatter',
-                mode: 'lines+markers',
+                mode: 'markers',
                 name: 'Confidence',
-                x: priceTrend.map((item) => item.label),
+                x: timelineOrder,
                 y: priceTrend.map((item) => item.confidence),
                 yaxis: 'y2',
-                line: { color: colors.positive, width: 2, dash: 'dot' },
-                marker: { size: 6, color: colors.positive },
-                hovertemplate: '%{x}<br>Confidence: %{y}%<extra></extra>',
+                marker: { size: 8, color: colors.positive, symbol: 'diamond' },
+                customdata: priceTrend.map((item) => [item.label || '-', item.city || '-']),
+                hovertemplate: 'Run %{x}<br>Saved: %{customdata[0]}<br>City: %{customdata[1]}<br>Confidence: %{y}%<extra></extra>',
             },
         ], baseChartLayout(colors, {
+            hovermode: 'x unified',
+            xaxis: {
+                title: 'Saved Prediction Order',
+                tickmode: 'array',
+                tickvals: timelineOrder,
+                ticktext: timelineOrder.map((value) => `${value}`),
+                gridcolor: colors.line,
+                color: colors.soft,
+                automargin: true,
+            },
             yaxis: { title: `Price (${currency.code})`, tickprefix: currency.symbol, gridcolor: colors.line, color: colors.soft },
             yaxis2: {
                 title: 'Confidence %',
@@ -1626,11 +1931,12 @@ function renderPredictionOverlay(args) {
         }
                 const currency = getCurrencyConfig();
                 const predictedPrice = safeNumber(args.predPrice);
-                const estimatedRange = `${formatCurrency(predictedPrice * 0.9)} → ${formatCurrency(predictedPrice * 1.1)}`;
         const analytics = args.predAnalytics || {};
+                const estimatedRange = `${formatCurrency(safeNumber(analytics.rangeLowValue, predictedPrice * 0.9))} → ${formatCurrency(safeNumber(analytics.rangeHighValue, predictedPrice * 1.1))}`;
                 const agePenalty = scaleFactorWidth(analytics.agePenalty, 'agePenalty');
                 const mileagePenalty = scaleFactorWidth(analytics.mileagePenalty, 'mileagePenalty');
                 const demandBoost = scaleFactorWidth(analytics.demandBoost, 'demandBoost');
+            renderPredictionDetailsModal(args);
         box.innerHTML = `
           <div class="pred-price-row">
                         <span class="pred-sym">${currency.symbol}</span>
@@ -1672,11 +1978,15 @@ function renderPredictionOverlay(args) {
                     <div class="pred-subfacts">
                         <div class="subfact-card"><span class="k">Mileage Band</span><span class="v">${analytics.mileageBand || '-'}</span></div>
                         <div class="subfact-card"><span class="k">Demand Band</span><span class="v">${analytics.demandBand || '-'}</span></div>
-                        <div class="subfact-card"><span class="k">Estimated Range</span><span class="v">${estimatedRange}</span></div>
+                        <button class="subfact-card action-card" type="button" onclick="openPredictionDetailsModal()">
+                            <span class="k">Prediction Breakdown</span>
+                            <span class="subfact-action">See Details</span>
+                        </button>
                     </div>
                     <div class="pred-note">Estimated using encoded category signals, scaled numeric inputs, engineered car age and usage intensity, and learned regression weights.</div>
         `;
     } else {
+        renderPredictionDetailsModal(null, false);
         if (box) box.remove();
     }
 }
@@ -1695,6 +2005,364 @@ function showPredictingOverlay() {
       <div class="pred-loader"></div>
       <div class="pred-rng" style="margin-top:8px; color:#eee;">Running model inference and analytics...</div>
     `;
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function extractMetricNumber(value, fallback = 0) {
+    const numeric = Number(value);
+    if (Number.isFinite(numeric)) {
+        return numeric;
+    }
+
+    const cleaned = String(value ?? '').replace(/[^0-9.+-]/g, '');
+    if (!cleaned) {
+        return fallback;
+    }
+
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function clampNumber(value, minValue, maxValue) {
+    return Math.min(maxValue, Math.max(minValue, value));
+}
+
+function getCurrentPredictionInputs() {
+    const activeTransmission = document.querySelector('#transRow .tog.active');
+    const activeBody = document.querySelector('#bodyRow .bod.active');
+    return {
+        year: document.getElementById('yearSel')?.value || '-',
+        kmsRun: document.getElementById('kmsInput')?.value || '-',
+        fuelType: document.getElementById('fuelSel')?.value || '-',
+        transmission: activeTransmission ? activeTransmission.textContent : '-',
+        bodyType: activeBody ? activeBody.textContent : '-',
+        city: document.getElementById('citySel')?.value || '-',
+        timesViewed: document.getElementById('timesInput')?.value || '-',
+    };
+}
+
+function closePredictionDetailsModal() {
+    const modal = document.getElementById('predictionDetailsModal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+function buildPredictionDetailState(args) {
+    const analytics = args.predAnalytics || {};
+    const about = args.aboutAnalytics || {};
+    const inputs = getCurrentPredictionInputs();
+    const predictedPrice = safeNumber(args.predPrice);
+    const referenceYear = Math.round(safeNumber(analytics.referenceYear, 2024));
+    const yearValue = Math.round(safeNumber(inputs.year, referenceYear));
+    const kmsRunValue = Math.max(0, Math.round(safeNumber(analytics.kmsRunValue, safeNumber(inputs.kmsRun))));
+    const timesViewedValue = Math.max(0, Math.round(safeNumber(analytics.timesViewedValue, safeNumber(inputs.timesViewed))));
+    const carAgeYears = Math.max(0, Math.round(safeNumber(analytics.carAgeYears, yearValue > 0 ? referenceYear - yearValue : extractMetricNumber(analytics.carAge))));
+    const kmsPerYearValue = safeNumber(analytics.kmsPerYearValue, kmsRunValue / Math.max(carAgeYears, 1));
+
+    const agePenaltyCap = Math.round(safeNumber(analytics.agePenaltyCap, FACTOR_LIMITS.agePenalty));
+    const mileagePenaltyCap = Math.round(safeNumber(analytics.mileagePenaltyCap, FACTOR_LIMITS.mileagePenalty));
+    const demandBoostCap = Math.round(safeNumber(analytics.demandBoostCap, FACTOR_LIMITS.demandBoost));
+
+    const agePenaltyRaw = safeNumber(analytics.agePenaltyRaw, carAgeYears * 1.8);
+    const mileagePenaltyRaw = safeNumber(analytics.mileagePenaltyRaw, (kmsRunValue / 120000) * 20);
+    const demandBoostRaw = safeNumber(analytics.demandBoostRaw, (timesViewedValue / 5000) * 10);
+
+    const agePenaltyValue = clampNumber(Math.round(safeNumber(analytics.agePenaltyValue, extractMetricNumber(analytics.agePenalty, agePenaltyRaw))), 0, agePenaltyCap);
+    const mileagePenaltyValue = clampNumber(Math.round(safeNumber(analytics.mileagePenaltyValue, extractMetricNumber(analytics.mileagePenalty, mileagePenaltyRaw))), 0, mileagePenaltyCap);
+    const demandBoostValue = clampNumber(Math.round(safeNumber(analytics.demandBoostValue, extractMetricNumber(analytics.demandBoost, demandBoostRaw))), 0, demandBoostCap);
+
+    const confidenceBase = Math.round(safeNumber(analytics.confidenceBase, 78));
+    const confidenceFloor = Math.round(safeNumber(analytics.confidenceFloor, 55));
+    const confidenceCeiling = Math.round(safeNumber(analytics.confidenceCeiling, 92));
+    const confidenceAgeImpact = Math.round(safeNumber(analytics.confidenceAgeImpact, Math.floor(agePenaltyValue / 3)));
+    const confidenceMileageImpact = Math.round(safeNumber(analytics.confidenceMileageImpact, Math.floor(mileagePenaltyValue / 4)));
+    const confidenceDemandImpact = Math.round(safeNumber(analytics.confidenceDemandImpact, Math.floor(demandBoostValue / 2)));
+    const confidenceUnclamped = Math.round(safeNumber(analytics.confidenceUnclamped, confidenceBase - confidenceAgeImpact - confidenceMileageImpact + confidenceDemandImpact));
+    const confidenceValue = clampNumber(Math.round(safeNumber(analytics.confidenceValue, extractMetricNumber(analytics.confidence, confidenceUnclamped))), confidenceFloor, confidenceCeiling);
+
+    const rangeLow = safeNumber(analytics.rangeLowValue, predictedPrice * 0.9);
+    const rangeHigh = safeNumber(analytics.rangeHighValue, predictedPrice * 1.1);
+    const mileageBand = analytics.mileageBand || (kmsRunValue <= 30000 ? 'Low' : kmsRunValue <= 70000 ? 'Medium' : 'High');
+    const demandBand = analytics.demandBand || (timesViewedValue >= 2000 ? 'Hot' : timesViewedValue >= 500 ? 'Active' : 'Normal');
+    const marketPulse = analytics.marketPulse || (demandBoostValue >= 10 ? 'High Interest' : mileagePenaltyValue >= 25 ? 'Price Sensitive' : 'Balanced');
+
+    return {
+        analytics,
+        about,
+        inputs,
+        predictedPrice,
+        rangeLow,
+        rangeHigh,
+        referenceYear,
+        carAgeYears,
+        kmsRunValue,
+        timesViewedValue,
+        kmsPerYearValue,
+        agePenaltyValue,
+        agePenaltyRaw,
+        agePenaltyCap,
+        mileagePenaltyValue,
+        mileagePenaltyRaw,
+        mileagePenaltyCap,
+        demandBoostValue,
+        demandBoostRaw,
+        demandBoostCap,
+        confidenceValue,
+        confidenceUnclamped,
+        confidenceBase,
+        confidenceFloor,
+        confidenceCeiling,
+        confidenceAgeImpact,
+        confidenceMileageImpact,
+        confidenceDemandImpact,
+        mileageBand,
+        demandBand,
+        marketPulse,
+        carAgeLabel: analytics.carAge || `${carAgeYears}y`,
+        mileageLabel: analytics.mileage || `${kmsRunValue.toLocaleString()} km`,
+        viewsLabel: analytics.views || `${timesViewedValue.toLocaleString()}`,
+        agePenaltyLabel: analytics.agePenalty || `-${agePenaltyValue}%`,
+        mileagePenaltyLabel: analytics.mileagePenalty || `-${mileagePenaltyValue}%`,
+        demandBoostLabel: analytics.demandBoost || `+${demandBoostValue}%`,
+        confidenceLabel: analytics.confidence || `${confidenceValue}%`,
+    };
+}
+
+function renderPredictionDetailsModal(args, forceOpen = null) {
+    const modal = document.getElementById('predictionDetailsModal');
+    const content = document.getElementById('predictionDetailsContent');
+    if (!modal || !content) return;
+
+    if (!args || args.predPrice === null || args.predPrice === undefined) {
+        PREDICTION_DETAILS_CONTEXT = null;
+        content.innerHTML = '';
+        closePredictionDetailsModal();
+        return;
+    }
+
+    const detailState = buildPredictionDetailState(args);
+    const {
+        analytics,
+        about,
+        inputs,
+        predictedPrice,
+        rangeLow,
+        rangeHigh,
+        referenceYear,
+        carAgeYears,
+        kmsRunValue,
+        timesViewedValue,
+        kmsPerYearValue,
+        agePenaltyValue,
+        agePenaltyRaw,
+        agePenaltyCap,
+        mileagePenaltyValue,
+        mileagePenaltyRaw,
+        mileagePenaltyCap,
+        demandBoostValue,
+        demandBoostRaw,
+        demandBoostCap,
+        confidenceValue,
+        confidenceUnclamped,
+        confidenceBase,
+        confidenceFloor,
+        confidenceCeiling,
+        confidenceAgeImpact,
+        confidenceMileageImpact,
+        confidenceDemandImpact,
+        mileageBand,
+        demandBand,
+        marketPulse,
+        carAgeLabel,
+        mileageLabel,
+        viewsLabel,
+        agePenaltyLabel,
+        mileagePenaltyLabel,
+        demandBoostLabel,
+        confidenceLabel,
+    } = detailState;
+    const topFeatures = Array.isArray(about.topFeatures) ? about.topFeatures.slice(0, 6) : [];
+    const modelName = about.modelName || 'Gradient Boosting Regressor';
+    const confidenceWasClamped = confidenceUnclamped !== confidenceValue;
+    const modalShouldOpen = forceOpen === true || (forceOpen === null && modal.classList.contains('open'));
+
+    PREDICTION_DETAILS_CONTEXT = {
+        predictedPrice,
+        analytics: detailState,
+        about,
+    };
+
+    content.innerHTML = `
+        <div class="pred-details-head">
+            <div class="pred-details-eyebrow">Prediction breakdown</div>
+            <div class="pred-details-title" id="predictionDetailsTitle">See how the price was explained</div>
+            <div class="pred-details-lead">The machine-learning model produces the final price first. The cards below turn that output into a plain-language walkthrough, so a non-technical panel can see which inputs lowered value, which signals helped demand, and how the confidence score was formed.</div>
+            <div class="detail-callout">Think of this like valuing a second-hand gadget: newer items usually keep more value, heavy use lowers it, and stronger buyer interest helps it sell faster. This system follows the same idea, but it learns the price pattern from past used-car records and then summarizes the strongest signals for you.</div>
+        </div>
+
+        <div class="detail-sections">
+            <section class="detail-section">
+                <div class="detail-section-h">1. Final prediction snapshot</div>
+                <div class="detail-section-p">This is the number the model believes is the most reasonable market value for the exact input combination you entered.</div>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <span class="k">Predicted price</span>
+                        <span class="v">${escapeHtml(formatCurrency(predictedPrice))}</span>
+                        <span class="note">Main output from the trained regression model.</span>
+                    </div>
+                    <div class="detail-card">
+                        <span class="k">Estimated range</span>
+                        <span class="v">${escapeHtml(formatCurrency(rangeLow))} - ${escapeHtml(formatCurrency(rangeHigh))}</span>
+                        <span class="note">A presentation-friendly band built around the final prediction.</span>
+                    </div>
+                    <div class="detail-card">
+                        <span class="k">Confidence</span>
+                        <span class="v">${escapeHtml(confidenceLabel)}</span>
+                        <span class="note">Higher means the condition and demand signals look more stable.</span>
+                    </div>
+                    <div class="detail-card">
+                        <span class="k">Market pulse</span>
+                        <span class="v">${escapeHtml(marketPulse)}</span>
+                        <span class="note">Quick reading of how active the current interest signal looks.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-h">2. Analytics summary</div>
+                <div class="detail-section-p">These are the live analytics beside the prediction. They summarize condition, demand, and confidence using the same values shown on the main result card.</div>
+                <div class="detail-grid">
+                    <div class="detail-card"><span class="k">Car age</span><span class="v">${escapeHtml(carAgeLabel)}</span><span class="note">Age affects resale value and confidence.</span></div>
+                    <div class="detail-card"><span class="k">Mileage</span><span class="v">${escapeHtml(mileageLabel)}</span><span class="note">Higher mileage usually means more wear.</span></div>
+                    <div class="detail-card"><span class="k">Views</span><span class="v">${escapeHtml(viewsLabel)}</span><span class="note">Used here as a simple demand signal.</span></div>
+                    <div class="detail-card"><span class="k">Usage per year</span><span class="v">${escapeHtml(`${Math.round(kmsPerYearValue).toLocaleString()} km/yr`)}</span><span class="note">Mileage normalized by age.</span></div>
+                    <div class="detail-card"><span class="k">Mileage band</span><span class="v">${escapeHtml(mileageBand)}</span><span class="note">Quick category for usage intensity.</span></div>
+                    <div class="detail-card"><span class="k">Demand band</span><span class="v">${escapeHtml(demandBand)}</span><span class="note">Quick category for buyer interest.</span></div>
+                    <div class="detail-card"><span class="k">Age adjustment</span><span class="v">${escapeHtml(agePenaltyLabel)}</span><span class="note">Downward pressure from age.</span></div>
+                    <div class="detail-card"><span class="k">Mileage adjustment</span><span class="v">${escapeHtml(mileagePenaltyLabel)}</span><span class="note">Downward pressure from wear.</span></div>
+                    <div class="detail-card"><span class="k">Demand boost</span><span class="v">${escapeHtml(demandBoostLabel)}</span><span class="note">Upward signal from interest.</span></div>
+                    <div class="detail-card"><span class="k">Confidence</span><span class="v">${escapeHtml(confidenceLabel)}</span><span class="note">Final score shown in the predictor.</span></div>
+                    <div class="detail-card"><span class="k">Market pulse</span><span class="v">${escapeHtml(marketPulse)}</span><span class="note">One-line reading of the current balance.</span></div>
+                    <div class="detail-card"><span class="k">Estimated range</span><span class="v">${escapeHtml(formatCurrency(rangeLow))} - ${escapeHtml(formatCurrency(rangeHigh))}</span><span class="note">Presentation band around the predicted price.</span></div>
+                </div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-h">3. Inputs the system used</div>
+                <div class="detail-section-p">These are the raw details you entered. The model combines them with engineered features such as car age and yearly usage to estimate value.</div>
+                <div class="detail-grid">
+                    <div class="detail-card"><span class="k">Year made</span><span class="v">${escapeHtml(inputs.year)}</span><span class="note">Reference year: ${escapeHtml(String(referenceYear))}</span></div>
+                    <div class="detail-card"><span class="k">Kilometers run</span><span class="v">${escapeHtml(`${kmsRunValue.toLocaleString()} km`)}</span><span class="note">Direct wear-and-tear signal.</span></div>
+                    <div class="detail-card"><span class="k">Times viewed</span><span class="v">${escapeHtml(timesViewedValue.toLocaleString())}</span><span class="note">Used as a demand signal.</span></div>
+                    <div class="detail-card"><span class="k">Usage per year</span><span class="v">${escapeHtml(`${Math.round(kmsPerYearValue).toLocaleString()} km/yr`)}</span><span class="note">Built from mileage divided by age.</span></div>
+                    <div class="detail-card"><span class="k">Fuel type</span><span class="v">${escapeHtml(inputs.fuelType)}</span><span class="note">Buyer preference differs by fuel type.</span></div>
+                    <div class="detail-card"><span class="k">Body type</span><span class="v">${escapeHtml(inputs.bodyType)}</span><span class="note">One of the strongest value drivers in the paper.</span></div>
+                    <div class="detail-card"><span class="k">Transmission</span><span class="v">${escapeHtml(inputs.transmission)}</span><span class="note">Captures how the car is configured.</span></div>
+                    <div class="detail-card"><span class="k">City</span><span class="v">${escapeHtml(inputs.city)}</span><span class="note">Represents local market behavior in the training data.</span></div>
+                </div>
+                <div class="detail-feature-chips">
+                    <span class="detail-chip">Car age: ${escapeHtml(carAgeLabel)}</span>
+                    <span class="detail-chip">Mileage band: ${escapeHtml(mileageBand)}</span>
+                    <span class="detail-chip">Demand band: ${escapeHtml(demandBand)}</span>
+                    ${topFeatures.map((item) => `<span class="detail-chip">${escapeHtml(item)}</span>`).join('')}
+                </div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-h">4. Condition and demand adjustments</div>
+                <div class="detail-section-p">These formulas do not replace the model. They explain, in a human-readable way, why the result feels safer or riskier based on age, mileage, and buyer attention.</div>
+                <div class="detail-formula-grid">
+                    <div class="detail-formula-card">
+                        <div class="detail-formula-title">Age penalty</div>
+                        <span class="detail-formula-eq">Car age = ${escapeHtml(String(referenceYear))} - ${escapeHtml(String(inputs.year))} = ${escapeHtml(`${carAgeYears} years`)}</span>
+                        <span class="detail-formula-sub">Raw age penalty = ${escapeHtml(`${carAgeYears} × 1.8 = ${agePenaltyRaw.toFixed(2)}%`)}</span>
+                        <span class="detail-formula-result">Capped age penalty = <strong>-${escapeHtml(`${agePenaltyValue}%`)}</strong> out of a maximum ${escapeHtml(`${agePenaltyCap}%`)}</span>
+                    </div>
+                    <div class="detail-formula-card">
+                        <div class="detail-formula-title">Mileage penalty</div>
+                        <span class="detail-formula-eq">Raw mileage penalty = (${escapeHtml(kmsRunValue.toLocaleString())} / 120,000) × 20</span>
+                        <span class="detail-formula-sub">Result before cap = ${escapeHtml(`${mileagePenaltyRaw.toFixed(2)}%`)}</span>
+                        <span class="detail-formula-result">Capped mileage penalty = <strong>-${escapeHtml(`${mileagePenaltyValue}%`)}</strong> out of a maximum ${escapeHtml(`${mileagePenaltyCap}%`)}</span>
+                    </div>
+                    <div class="detail-formula-card">
+                        <div class="detail-formula-title">Demand boost</div>
+                        <span class="detail-formula-eq">Raw demand boost = (${escapeHtml(timesViewedValue.toLocaleString())} / 5,000) × 10</span>
+                        <span class="detail-formula-sub">Result before cap = ${escapeHtml(`${demandBoostRaw.toFixed(2)}%`)}</span>
+                        <span class="detail-formula-result">Capped demand boost = <strong>+${escapeHtml(`${demandBoostValue}%`)}</strong> out of a maximum ${escapeHtml(`${demandBoostCap}%`)}</span>
+                    </div>
+                </div>
+                <div class="detail-bars">
+                    <div class="detail-bar-row">
+                        <span class="detail-bar-label">Age penalty</span>
+                        <span class="detail-bar-track"><span class="detail-bar-fill negative" style="width:${scaleFactorWidth(`-${agePenaltyValue}%`, 'agePenalty')}%"></span></span>
+                        <span class="detail-bar-value">-${escapeHtml(`${agePenaltyValue}%`)}</span>
+                    </div>
+                    <div class="detail-bar-row">
+                        <span class="detail-bar-label">Mileage penalty</span>
+                        <span class="detail-bar-track"><span class="detail-bar-fill negative" style="width:${scaleFactorWidth(`-${mileagePenaltyValue}%`, 'mileagePenalty')}%"></span></span>
+                        <span class="detail-bar-value">-${escapeHtml(`${mileagePenaltyValue}%`)}</span>
+                    </div>
+                    <div class="detail-bar-row">
+                        <span class="detail-bar-label">Demand boost</span>
+                        <span class="detail-bar-track"><span class="detail-bar-fill positive" style="width:${scaleFactorWidth(`+${demandBoostValue}%`, 'demandBoost')}%"></span></span>
+                        <span class="detail-bar-value">+${escapeHtml(`${demandBoostValue}%`)}</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-h">5. Confidence score math</div>
+                <div class="detail-section-p">Confidence starts from a base score of ${escapeHtml(`${confidenceBase}%`)}. Older age and heavier mileage reduce certainty. Strong buyer attention adds some certainty back.</div>
+                <div class="detail-grid two-col">
+                    <div class="detail-card">
+                        <span class="k">Confidence formula</span>
+                        <span class="v">${escapeHtml(`${confidenceBase} - ${confidenceAgeImpact} - ${confidenceMileageImpact} + ${confidenceDemandImpact} = ${confidenceUnclamped}%`)}</span>
+                        <span class="note">Age impact comes from ${escapeHtml(`${agePenaltyValue} // 3`)}, mileage impact from ${escapeHtml(`${mileagePenaltyValue} // 4`)}, and demand impact from ${escapeHtml(`${demandBoostValue} // 2`)}.</span>
+                    </div>
+                    <div class="detail-card">
+                        <span class="k">Clamp rule</span>
+                        <span class="v">${escapeHtml(`${confidenceFloor}% to ${confidenceCeiling}%`)}</span>
+                        <span class="note">Final confidence shown to users: ${escapeHtml(`${confidenceValue}%`)}${confidenceWasClamped ? `, because ${confidenceUnclamped}% was kept inside the allowed band.` : ', which already sat inside the allowed band.'}</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section">
+                <div class="detail-section-h">6. Plain-language reasoning</div>
+                <div class="detail-section-p">This section is the simplest defense: what the system would say if you had to explain the result to someone without a programming background.</div>
+                <ul class="detail-bullets">
+                    <li>The trained ${escapeHtml(modelName)} compared your car with similar cars in the dataset and estimated a market value of ${escapeHtml(formatCurrency(predictedPrice))}.</li>
+                    <li>The car is treated as ${escapeHtml(`${carAgeYears} years old`)}, so age pushes the result downward by about ${escapeHtml(`${agePenaltyValue}%`)} in the explanation layer.</li>
+                    <li>Mileage of ${escapeHtml(`${kmsRunValue.toLocaleString()} km`)} suggests the car has already been used significantly, which adds another ${escapeHtml(`${mileagePenaltyValue}%`)} penalty signal.</li>
+                    <li>Buyer attention is ${escapeHtml(timesViewedValue.toLocaleString())} views, which contributes a ${escapeHtml(`${demandBoostValue}%`)} positive signal and helps explain the current ${escapeHtml(marketPulse)} market pulse.</li>
+                    <li>The system also checks strong learned drivers such as body type, fuel type, transmission, and yearly usage intensity, not just one formula.</li>
+                    <li>For presentation: the model predicts the price, while these calculations explain why the result looks believable and how the confidence score was produced.</li>
+                </ul>
+            </section>
+        </div>
+    `;
+
+    if (modalShouldOpen) {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function openPredictionDetailsModal() {
+    const args = APP_STATE.args || {};
+    if (!args || args.predPrice === null || args.predPrice === undefined) return;
+    renderPredictionDetailsModal(args, true);
 }
 
 function resolveCityImage(key) {

@@ -283,10 +283,13 @@ def build_history_summary(history: list[dict]) -> dict[str, object]:
     highest_price = float(df["predictedPrice"].max())
     lowest_price = float(df["predictedPrice"].min())
 
-    trend_df = df.sort_values("createdAtParsed").tail(12)
+    trend_df = df.sort_values("createdAtParsed").tail(12).reset_index(drop=True)
     price_trend = [
         {
-            "label": row.createdAtParsed.strftime("%b %d") if pd.notna(row.createdAtParsed) else f"Run {index + 1}",
+            "sequence": index + 1,
+            "label": row.createdAtParsed.strftime("%b %d, %I:%M %p") if pd.notna(row.createdAtParsed) else f"Run {index + 1}",
+            "timestamp": row.createdAtParsed.isoformat(timespec="seconds") if pd.notna(row.createdAtParsed) else "",
+            "city": str(row.city).title(),
             "price": round(float(row.predictedPrice), 2),
             "confidence": int(row.confidenceValue),
         }

@@ -137,6 +137,7 @@ def build_prediction_analytics(request: PredictionRequest, predicted_price: floa
     car_age = max(0, reference_year - int(request.yr_mfr))
     kms_run = int(request.kms_run)
     times_viewed = int(request.times_viewed)
+    kms_per_year = kms_run / max(car_age, 1)
 
     if kms_run <= 30000:
         mileage_band = "Low"
@@ -152,11 +153,29 @@ def build_prediction_analytics(request: PredictionRequest, predicted_price: floa
     else:
         demand_band = "Normal"
 
-    age_penalty = min(35, round(car_age * 1.8))
-    mileage_penalty = min(45, round((kms_run / 120000) * 20))
-    demand_boost = min(18, round((times_viewed / 5000) * 10))
+    age_penalty_cap = 35
+    mileage_penalty_cap = 45
+    demand_boost_cap = 18
 
-    confidence_score = max(55, min(92, 78 - (age_penalty // 3) - (mileage_penalty // 4) + (demand_boost // 2)))
+    age_penalty_raw = car_age * 1.8
+    mileage_penalty_raw = (kms_run / 120000) * 20
+    demand_boost_raw = (times_viewed / 5000) * 10
+
+    age_penalty = min(age_penalty_cap, round(age_penalty_raw))
+    mileage_penalty = min(mileage_penalty_cap, round(mileage_penalty_raw))
+    demand_boost = min(demand_boost_cap, round(demand_boost_raw))
+
+    confidence_base = 78
+    confidence_floor = 55
+    confidence_ceiling = 92
+    confidence_age_impact = age_penalty // 3
+    confidence_mileage_impact = mileage_penalty // 4
+    confidence_demand_impact = demand_boost // 2
+    confidence_unclamped = confidence_base - confidence_age_impact - confidence_mileage_impact + confidence_demand_impact
+    confidence_score = max(confidence_floor, min(confidence_ceiling, confidence_unclamped))
+
+    range_low_value = predicted_price * 0.9
+    range_high_value = predicted_price * 1.1
 
     market_pulse = "Balanced"
     if demand_boost >= 10:
@@ -170,12 +189,36 @@ def build_prediction_analytics(request: PredictionRequest, predicted_price: floa
         views=f"{times_viewed:,}",
         mileageBand=mileage_band,
         demandBand=demand_band,
-        estimatedRange=f"INR {int(predicted_price * 0.9):,} - INR {int(predicted_price * 1.1):,}",
+        estimatedRange=f"INR {int(range_low_value):,} - INR {int(range_high_value):,}",
         agePenalty=f"-{age_penalty}%",
         mileagePenalty=f"-{mileage_penalty}%",
         demandBoost=f"+{demand_boost}%",
         confidence=f"{confidence_score}%",
         marketPulse=market_pulse,
+        referenceYear=reference_year,
+        carAgeYears=car_age,
+        kmsRunValue=kms_run,
+        timesViewedValue=times_viewed,
+        kmsPerYearValue=round(float(kms_per_year), 2),
+        agePenaltyValue=age_penalty,
+        agePenaltyRaw=round(float(age_penalty_raw), 2),
+        agePenaltyCap=age_penalty_cap,
+        mileagePenaltyValue=mileage_penalty,
+        mileagePenaltyRaw=round(float(mileage_penalty_raw), 2),
+        mileagePenaltyCap=mileage_penalty_cap,
+        demandBoostValue=demand_boost,
+        demandBoostRaw=round(float(demand_boost_raw), 2),
+        demandBoostCap=demand_boost_cap,
+        confidenceValue=confidence_score,
+        confidenceUnclamped=confidence_unclamped,
+        confidenceBase=confidence_base,
+        confidenceFloor=confidence_floor,
+        confidenceCeiling=confidence_ceiling,
+        confidenceAgeImpact=confidence_age_impact,
+        confidenceMileageImpact=confidence_mileage_impact,
+        confidenceDemandImpact=confidence_demand_impact,
+        rangeLowValue=round(float(range_low_value), 2),
+        rangeHighValue=round(float(range_high_value), 2),
     )
 
 
