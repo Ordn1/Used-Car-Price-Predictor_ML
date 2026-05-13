@@ -1545,6 +1545,17 @@ function baseChartLayout(colors, extra = {}) {
         plot_bgcolor: 'rgba(0,0,0,0)',
         margin: { l: 48, r: 20, t: 12, b: 44 },
         font: { color: colors.text, family: 'Georgia, Times New Roman, serif', size: 11 },
+        hoverlabel: {
+            bgcolor: 'rgba(12,12,12,0.94)',
+            bordercolor: colors.line,
+            font: {
+                color: colors.text,
+                family: 'Georgia, Times New Roman, serif',
+                size: 11,
+            },
+            align: 'left',
+            namelength: -1,
+        },
         xaxis: {
             color: colors.soft,
             gridcolor: colors.line,
