@@ -186,7 +186,53 @@ def available_options(label_encoders: dict[str, object]) -> dict[str, list[str]]
     }
 
 
-def build_feature_importance(model: object, feature_columns: list[str], selected_feature_columns: list[str]) -> list[dict[str, object]]:
+def build_feature_importance(
+    model: object,
+    feature_columns: list[str],
+    selected_feature_columns: list[str],
+    feature_info: dict[str, object] | None = None,
+) -> list[dict[str, object]]:
+    if feature_info:
+        reference_items = feature_info.get("feature_importance_reference", [])
+        if isinstance(reference_items, list):
+            ranked: list[dict[str, object]] = []
+            for item in reference_items:
+                if not isinstance(item, dict):
+                    continue
+
+                feature = str(item.get("feature", "")).strip()
+                if not feature or (feature not in feature_columns and feature not in selected_feature_columns):
+                    continue
+
+                try:
+                    importance = float(item.get("importance", 0.0))
+                except (TypeError, ValueError):
+                    continue
+
+                if importance <= 0:
+                    continue
+
+                ranked.append(
+                    {
+                        "feature": feature,
+                        "label": FEATURE_LABELS.get(feature, feature.replace("_", " ").title()),
+                        "importance": round(importance, 6),
+                        "percentage": item.get("percentage"),
+                    }
+                )
+
+            if ranked:
+                total = sum(float(item["importance"]) for item in ranked)
+                for item in ranked:
+                    try:
+                        percentage = float(item.get("percentage", 0.0))
+                    except (TypeError, ValueError):
+                        percentage = round((float(item["importance"]) / total) * 100, 2) if total > 0 else 0.0
+                    item["percentage"] = round(percentage, 2)
+
+                ranked.sort(key=lambda item: float(item["importance"]), reverse=True)
+                return ranked
+
     raw_values: list[float] = []
 
     if hasattr(model, "feature_importances_"):
@@ -240,7 +286,7 @@ def build_model_info() -> dict[str, object]:
         ),
         "available_options": available_options(label_encoders),
         "metrics": feature_info.get("metrics", {}),
-        "feature_importance": build_feature_importance(model, feature_columns, selected_feature_columns),
+        "feature_importance": build_feature_importance(model, feature_columns, selected_feature_columns, feature_info),
         "train_samples": feature_info.get("train_samples"),
         "test_samples": feature_info.get("test_samples"),
         "final_r2": feature_info.get("final_r2"),

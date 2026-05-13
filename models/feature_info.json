@@ -20,6 +20,43 @@
     "times_viewed",
     "transmission"
   ],
+  "feature_importance_reference": [
+    {
+      "feature": "body_type",
+      "importance": 0.447,
+      "percentage": 44.66
+    },
+    {
+      "feature": "car_age",
+      "importance": 0.318,
+      "percentage": 31.77
+    },
+    {
+      "feature": "fuel_type",
+      "importance": 0.063,
+      "percentage": 6.29
+    },
+    {
+      "feature": "times_viewed",
+      "importance": 0.055,
+      "percentage": 5.49
+    },
+    {
+      "feature": "transmission",
+      "importance": 0.046,
+      "percentage": 4.6
+    },
+    {
+      "feature": "kms_run",
+      "importance": 0.044,
+      "percentage": 4.4
+    },
+    {
+      "feature": "kms_per_year",
+      "importance": 0.028,
+      "percentage": 2.8
+    }
+  ],
   "train_samples": 5920,
   "test_samples": 1480,
   "target_column": "sale_price",

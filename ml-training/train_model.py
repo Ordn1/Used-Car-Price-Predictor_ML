@@ -31,6 +31,15 @@ REFERENCE_YEAR = 2024
 NOTEBOOKS_DIR = BASE_DIR / "notebooks"
 MODEL_SELECTION_NOTEBOOK = NOTEBOOKS_DIR / "model_selection.ipynb"
 HYPERPARAM_TUNING_NOTEBOOK = NOTEBOOKS_DIR / "hyperparameter_tuning.ipynb"
+PAPER_FEATURE_IMPORTANCE = [
+    ("body_type", 0.447),
+    ("car_age", 0.318),
+    ("fuel_type", 0.063),
+    ("times_viewed", 0.055),
+    ("transmission", 0.046),
+    ("kms_run", 0.044),
+    ("kms_per_year", 0.028),
+]
 
 RAW_FEATURE_COLUMNS = [
     "yr_mfr",
@@ -99,6 +108,18 @@ def metric_record(mae: float, mse: float, r2: float) -> dict[str, float]:
         "mse": round(float(mse), 2),
         "r2": round(float(r2), 4),
     }
+
+
+def build_reference_feature_importance() -> list[dict[str, object]]:
+    total = sum(importance for _, importance in PAPER_FEATURE_IMPORTANCE)
+    return [
+        {
+            "feature": feature,
+            "importance": round(float(importance), 6),
+            "percentage": round((float(importance) / total) * 100, 2),
+        }
+        for feature, importance in PAPER_FEATURE_IMPORTANCE
+    ]
 
 
 def notebook_cell_source(cell: dict[str, object]) -> str:
@@ -354,6 +375,7 @@ def build_feature_info(
         "final_model": "Refined GradientBoostingRegressor",
         "features": feature_columns,
         "selected_features_tuned": selected_features,
+        "feature_importance_reference": build_reference_feature_importance(),
         "train_samples": int(len(y_train)),
         "test_samples": int(len(y_test)),
         "target_column": TARGET_COLUMN,
