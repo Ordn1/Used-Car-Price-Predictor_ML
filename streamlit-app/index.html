@@ -1019,6 +1019,12 @@ const CURRENCY_MAP = {
     inr: { code: 'INR', symbol: '₹', rate: 1, locale: 'en-IN' },
     php: { code: 'PHP', symbol: '₱', rate: 0.67, locale: 'en-PH' },
 };
+const FACTOR_LIMITS = {
+    agePenalty: 35,
+    mileagePenalty: 45,
+    demandBoost: 18,
+};
+const FACTOR_MIN_WIDTH = 12;
 let APP_STATE = {
     args: {},
     currency: 'inr',
@@ -1283,7 +1289,10 @@ function numericPercent(value) {
 }
 
 function scaleFactorWidth(value, key) {
-    return numericPercent(value);
+    const magnitude = numericPercent(value);
+    if (!magnitude) return 0;
+    const ceiling = FACTOR_LIMITS[key] || 100;
+    return Math.min(100, Math.max(FACTOR_MIN_WIDTH, (magnitude / ceiling) * 100));
 }
 
 function renderHistoryCharts(summary) {
@@ -1658,7 +1667,7 @@ function renderPredictionOverlay(args) {
                             <span class="factor-track"><span class="factor-fill positive" style="width:${demandBoost}%"></span></span>
                             <span class="factor-value">${analytics.demandBoost || '-'}</span>
                         </div>
-                        <div class="factor-scale-note">Bars reflect the actual percentage value for each adjustment.</div>
+                        <div class="factor-scale-note">Bars scale against each factor's maximum so capped adjustments can still fill the line.</div>
                     </div>
                     <div class="pred-subfacts">
                         <div class="subfact-card"><span class="k">Mileage Band</span><span class="v">${analytics.mileageBand || '-'}</span></div>
