@@ -221,7 +221,7 @@ def load_dataset_overview(dataset_path: str) -> dict[str, object]:
 
     return {
         "recordCount": f"{len(df):,}",
-        "featureCount": f"{max(0, len(df.columns) - 1):,}",
+        "featureCount": "7",
         "cityCoverage": f"{city_coverage}",
         "medianPrice": f"INR {median_price:,}",
         "medianPriceValue": median_price,
@@ -692,7 +692,7 @@ result = custom_car_ui(
     aboutImages=ABOUT_IMAGES,
     aboutAnalytics=about_payload,
     modelName=model_info.get("selected_model", "Not Loaded"),
-    featureCount=len(model_info.get("feature_columns", [])),
+    featureCount=7,
     cityImages=CITY_IMAGES,
     yearOptions=years_list,
     fuelOptions=fuel_options,
