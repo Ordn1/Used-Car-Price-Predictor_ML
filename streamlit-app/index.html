@@ -1455,6 +1455,13 @@ function setActivePage(pageKey, notify = false) {
         item.classList.toggle('active', item.dataset.page === safePage);
     });
 
+    // Force Plotly to resize any charts that just became visible
+    setTimeout(() => {
+        document.querySelectorAll('.page.active .js-plotly-plot').forEach(el => {
+            try { Plotly.Plots.resize(el); } catch(e){}
+        });
+    }, 10);
+
     if (notify) {
         const navId = (window.crypto?.randomUUID?.() || `${Date.now()}_${Math.random().toString(36).slice(2)}`);
         sendMessageToStreamlitClient('setComponentValue', {
@@ -2437,10 +2444,21 @@ window.addEventListener("message", function(event) {
         applyCityImage(args.cityVal || DEFAULT_CITY_IMAGE_KEY);
         
         renderPredictionOverlay(args);
-        renderHistoryPage(args);
-        renderAboutPage(args);
         setActivePage(args.currentPage || 'predictor', false);
         
+        // Render pages after setActivePage so active tab is `display: block`
+        // which gives Plotly charts the correct container dimensions.
+        renderHistoryPage(args);
+        renderAboutPage(args);
+        
+        // Let the newly rendered charts in the active page settle, then resize if needed
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+            document.querySelectorAll('.page.active .js-plotly-plot').forEach(el => {
+                try { Plotly.Plots.resize(el); } catch(e){}
+            });
+        }, 50);
+
         const errDiv = document.getElementById('errDiv');
         if (args.errMsg) {
             errDiv.style.display = 'block';
